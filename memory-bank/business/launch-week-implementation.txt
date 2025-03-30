@@ -1,0 +1,98 @@
+// pages/api/calendar/launch-week.js - API endpoint for launch week calendar
+
+/**
+ * Different Not Less Apparel - Launch Week Implementation Plan
+ * April 2-8, 2025 (World Autism Awareness Day and following week)
+ */
+
+// Launch Week Content Calendar - Detailed day-by-day implementation
+const LAUNCH_WEEK_CALENDAR = {
+  // DAY 1: April 2, 2025 (World Autism Awareness Day)
+  '2025-04-02': {
+    theme: 'Brand Launch Day',
+    key_message: 'Introducing Different Not Less Apparel - Celebrating all forms of communication',
+    collection_focus: 'Different Not Less Collection',
+    content: [
+      {
+        title: 'Brand Launch Announcement',
+        type: 'announcement',
+        time: '09:00',
+        platforms: ['instagram', 'facebook', 'email'],
+        content_description: 'Introduction to Different Not Less, mission, founder story',
+        visual_assets: ['brand_logo.jpg', 'founder_photo.jpg', 'product_preview.jpg'],
+        call_to_action: 'Shop our launch collection at difnotless.com',
+        target_audience: 'all_segments',
+        seo_keywords: ['different not less apparel', 'autism acceptance clothing'],
+        copy_outline: `
+          Headline: Introducing Different Not Less Apparel
+          Opening: We're excited to announce the launch of Different Not Less Apparel, a brand celebrating all forms of communication.
+          Mission Statement: Our mission is to create inclusive, high-quality apparel that celebrates AAC, autism acceptance, and diverse communication methods.
+          Founder Story: Brief background on founder's personal connection to AAC and autism.
+          Product Teaser: Introducing our flagship collections.
+          Closing: Shop now and join our mission to spread the message that all communication is valid.
+        `
+      },
+      {
+        title: '"Different Not Less" Collection Showcase',
+        type: 'product_showcase',
+        time: '12:00',
+        platforms: ['instagram', 'pinterest', 'website_homepage'],
+        content_description: 'Showcase flagship neurodiversity-affirming collection',
+        visual_assets: ['DNL_collection_hero.jpg', 'product_detail_shots.jpg', 'model_photos.jpg'],
+        call_to_action: 'Shop the Different Not Less collection now',
+        target_audience: ['autism_community', 'parents', 'general_public'],
+        seo_keywords: ['neurodiversity clothing', 'autism acceptance apparel'],
+        copy_outline: `
+          Headline: Different Not Less - Celebrating Neurodiversity
+          Opening: Our flagship collection celebrates neurodiversity and promotes autism acceptance.
+          Product Features: Highlight design elements, sensory-friendly features, and materials.
+          Design Meaning: Explain the symbolism and meaning behind key designs.
+          Closing: Wear your values and start meaningful conversations.
+        `
+      },
+      {
+        title: 'Website Launch',
+        type: 'technical_implementation',
+        time: '08:00',
+        description: 'Publish website and activate all features',
+        tasks: [
+          'Final technical checks on all pages',
+          'Activate payment processing',
+          'Test checkout flow once more',
+          'Enable analytics tracking',
+          'Publish all collections and products'
+        ],
+        responsible: 'tech_team'
+      },
+      {
+        title: 'Customer Service Preparation',
+        type: 'operational',
+        time: '08:00',
+        description: 'Prepare customer service team for launch',
+        tasks: [
+          'Brief team on all products and policies',
+          'Set up monitoring for customer inquiries',
+          'Prepare FAQ responses',
+          'Test support email and chat'
+        ],
+        responsible: 'customer_service_team'
+      }
+    ]
+  },
+  
+  // DAY 2: April 3, 2025
+  '2025-04-03': {
+    theme: 'Your Words Matter Day',
+    key_message: 'Every form of communication deserves to be heard and respected',
+    collection_focus: 'Your Words Matter Collection',
+    content: [
+      {
+        title: '"Your Words Matter" Collection Introduction',
+        type: 'product_showcase',
+        time: '10:00',
+        platforms: ['instagram', 'facebook', 'pinterest'],
+        content_description: 'Introduction to AAC-focused collection',
+        visual_assets: ['YWM_collection_hero.jpg', 'aac_design_details.jpg', 'model_with_device.jpg'],
+        call_to_action: 'Celebrate all communication methods with our Your Words Matter collection',
+        target_audience: ['slps', 'teachers', 'parents'],
+        seo_keywords: ['AAC t-shirts', 'your words matter shirts', 'speech therapy apparel'],

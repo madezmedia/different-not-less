@@ -1,0 +1,243 @@
+// components/SEO.js - SEO component for Next.js pages
+
+import Head from 'next/head';
+import { useRouter } from 'next/router';
+
+/**
+ * SEO component for implementing structured data and meta tags
+ * 
+ * @param {Object} props
+ * @param {string} props.title - Page title
+ * @param {string} props.description - Page description
+ * @param {string} props.image - Open Graph image URL
+ * @param {Object} props.product - Product data (for product pages)
+ * @param {Object} props.collection - Collection data (for collection pages)
+ * @param {Object} props.article - Article data (for blog posts)
+ * @param {Object} props.organization - Organization data
+ * @returns {JSX.Element}
+ */
+const SEO = ({ 
+  title, 
+  description, 
+  image, 
+  product, 
+  collection, 
+  article,
+  organization = DEFAULT_ORGANIZATION 
+}) => {
+  const router = useRouter();
+  const url = `${process.env.NEXT_PUBLIC_SITE_URL}${router.asPath}`;
+  
+  // Set default title and description if not provided
+  const siteTitle = title 
+    ? `${title} | Different Not Less Apparel` 
+    : 'Different Not Less Apparel - Inclusive Communication Apparel';
+  
+  const siteDescription = description || 
+    'Apparel celebrating AAC, autism acceptance, and the message that your words matter - regardless of how you communicate.';
+  
+  // Get structured data based on page type
+  const structuredData = getStructuredData({ 
+    url, 
+    title: siteTitle, 
+    description: siteDescription, 
+    image, 
+    product, 
+    collection, 
+    article,
+    organization 
+  });
+
+  return (
+    <Head>
+      <title>{siteTitle}</title>
+      <meta name="description" content={siteDescription} />
+      
+      {/* Canonical URL */}
+      <link rel="canonical" href={url} />
+      
+      {/* Open Graph / Facebook */}
+      <meta property="og:type" content={getOgType({ product, collection, article })} />
+      <meta property="og:url" content={url} />
+      <meta property="og:title" content={siteTitle} />
+      <meta property="og:description" content={siteDescription} />
+      {image && <meta property="og:image" content={image} />}
+      
+      {/* Twitter */}
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:url" content={url} />
+      <meta name="twitter:title" content={siteTitle} />
+      <meta name="twitter:description" content={siteDescription} />
+      {image && <meta name="twitter:image" content={image} />}
+      
+      {/* Structured data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
+    </Head>
+  );
+};
+
+// Default organization data
+const DEFAULT_ORGANIZATION = {
+  name: 'Different Not Less Apparel',
+  url: process.env.NEXT_PUBLIC_SITE_URL,
+  logo: `${process.env.NEXT_PUBLIC_SITE_URL}/images/logo.png`,
+  sameAs: [
+    'https://instagram.com/difnotless',
+    'https://facebook.com/DifferentNotLessApparel',
+    'https://pinterest.com/difnotless'
+  ]
+};
+
+/**
+ * Get appropriate Open Graph type based on page type
+ * @param {Object} pageData - Page data
+ * @returns {string} Open Graph type
+ */
+function getOgType({ product, collection, article }) {
+  if (product) return 'product';
+  if (article) return 'article';
+  if (collection) return 'website';
+  return 'website';
+}
+
+/**
+ * Generate structured data based on page type
+ * @param {Object} data - Page data
+ * @returns {Object} Structured data object
+ */
+function getStructuredData({
+  url,
+  title,
+  description,
+  image,
+  product,
+  collection,
+  article,
+  organization
+}) {
+  // Base WebPage structured data
+  const webPageData = {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    url,
+    name: title,
+    description,
+    ...(image && { image }),
+    publisher: {
+      '@type': 'Organization',
+      name: organization.name,
+      logo: {
+        '@type': 'ImageObject',
+        url: organization.logo
+      }
+    }
+  };
+  
+  // For product pages
+  if (product) {
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'Product',
+      name: product.title,
+      description: product.shortDescription || description,
+      image: product.mainImage ? product.mainImage : image,
+      sku: product.sku,
+      brand: {
+        '@type': 'Brand',
+        name: 'Different Not Less Apparel'
+      },
+      offers: {
+        '@type': 'Offer',
+        url: url,
+        priceCurrency: 'USD',
+        price: product.price,
+        availability: product.inStock 
+          ? 'https://schema.org/InStock' 
+          : 'https://schema.org/OutOfStock',
+        itemCondition: 'https://schema.org/NewCondition'
+      },
+      ...(product.materialInfo && {
+        additionalProperty: [
+          {
+            '@type': 'PropertyValue',
+            name: 'Material',
+            value: product.materialInfo.composition
+          },
+          {
+            '@type': 'PropertyValue',
+            name: 'SensoryFeatures',
+            value: product.sensoryFeatures
+          }
+        ]
+      })
+    };
+  }
+  
+  // For collection pages
+  if (collection) {
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'CollectionPage',
+      name: collection.title,
+      description: collection.description || description,
+      url,
+      ...(collection.image && { image: collection.image }),
+      mainEntity: {
+        '@type': 'ItemList',
+        itemListElement: collection.products.map((product, index) => ({
+          '@type': 'ListItem',
+          position: index + 1,
+          item: {
+            '@type': 'Product',
+            name: product.title,
+            url: `${process.env.NEXT_PUBLIC_SITE_URL}/products/${product.slug}`,
+            ...(product.mainImage && { image: product.mainImage })
+          }
+        }))
+      }
+    };
+  }
+  
+  // For articles/blog posts
+  if (article) {
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'Article',
+      headline: article.title,
+      description: article.description || description,
+      image: article.mainImage || image,
+      author: {
+        '@type': 'Person',
+        name: article.author?.name || 'Different Not Less Team'
+      },
+      publisher: {
+        '@type': 'Organization',
+        name: organization.name,
+        logo: {
+          '@type': 'ImageObject',
+          url: organization.logo
+        }
+      },
+      datePublished: article.publishedAt,
+      dateModified: article.updatedAt || article.publishedAt
+    };
+  }
+  
+  // If none of the specific types, return organization data
+  if (url === process.env.NEXT_PUBLIC_SITE_URL) {
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'Organization',
+      name: organization.name,
+      url: organization.url,
+      logo: organization.logo,
+      sameAs: organization.sameAs,
+      description
+    };
+  }
+  
+  return webPageData;
+}

@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Different Not Less Apparel - Notion Template</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: #37352f;
+            margin: 0;
+            padding: 20px;
+        }
+        .page-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .page-title {
+            font-size: 40px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e1e1e1;
+        }
+        .page-icon {
+            margin-right: 8px;
+        }
+        .section {
+            margin-bottom: 30px;
+        }
+        .section-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        .subpage {
+            margin-left: 25px;
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #f7f6f3;
+        }
+        .subpage-title {
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        .database {
+            margin-left: 25px;
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #edefff;
+        }
+        .database-title {
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        .properties {
+            margin-left: 20px;
+            font-size: 14px;
+            color: #6b6b6b;
+        }
+        .property {
+            margin-bottom: 5px;
+        }
+        .property-type {
+            color: #9b9b9b;
+            font-size: 12px;
+        }
+        .views {
+            margin-left: 20px;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        .view {
+            margin-bottom: 5px;
+            color: #6b6b6b;
+        }
+        .content {
+            margin-left: 20px;
+            font-size: 14px;
+            color: #6b6b6b;
+        }
+        .content-item {
+            margin-bottom: 5px;
+        }
+        .callout {
+            padding: 10px 15px;
+            border-radius: 5px;
+            background-color: #f1f1ef;
+            margin: 15px 0;
+            display: flex;
+            align-items: flex-start;
+        }
+        .callout-icon {
+            margin-right: 10px;
+            font-size: 20px;
+        }
+        .callout-content {
+            flex: 1;
+        }
+        .toggle {
+            margin-bottom: 10px;
+        }
+        .toggle-title {
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .toggle-content {
+            margin-left: 20px;
+            display: none;
+        }
+        .toggle.open .toggle-content {
+            display: block;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggles = document.querySelectorAll('.toggle-title');
+            toggles.forEach(toggle => {
+                toggle.addEventListener('click', function() {
+                    this.parentElement.classList.toggle('open');
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="page-container">
+        <h1 class="page-title"><span class="page-icon">🏠</span>Different Not Less Apparel</h1>
+        
+        <div class="callout">
+            <div class="callout-icon">💡</div>
+            <div class="callout-content">
+                <strong>Welcome to the Different Not Less Apparel Notion workspace!</strong> This workspace contains all documentation and resources for our e-commerce project launching on April 2, 2025.
+            </div>
+        </div>
+
+        <!-- Project Overview Section -->
+        <div class="section">
+            <h2 class="section-title"><span class="page-icon">📋</span>Project Overview</h2>
+            
+            <div class="subpage">
+                <h3 class="subpage-title"><span class="page-icon">📄</span>Project Brief</h3>
+                <div class="content">
+                    <div class="content-item">Mission and vision</div>
+                    <div class="content-item">Core product collections</div>
+                    <div class="content-item">Target audiences</div>
+                    <div class="content-item">Success metrics</div>
+                    <div class="content-item">Funding and budget</div>
+                </div>
+            </div>
+            
+            <div class="subpage">
+                <h3 class="subpage-title"><span class="page-icon">📄</span>Product Context</h3>
+                <div class="content">
+                    <div class="content-item">Market analysis</div>
+                    <div class="content-item">Competitive landscape</div>
+                    <div class="content-item">Product specifications</div>
+                    <div class="content-item">Pricing strategy</div>
+                    <div class="content-item">User experience goals</div>
+                </div>
+            </div>
+            
+            <div class="subpage">
+                <h3 class="subpage-title"><span class="page-icon">📄</span>Active Context</h3>
+                <div class="content">
+                    <div class="content-item">Current sprint focus</div>
+                    <div class="content-item">Recent decisions</div>
+                    <div class="content-item">Active tasks by department</div>
+                    <div class="content-item">Key challenges and solutions</div>
+                    <div class="content-item">Next milestones</div>
+                </div>
+            </div>
+            
+            <div class="subpage">
+                <h3 class="subpage-title"><span class="page-icon">📄</span>Progress Tracker</h3>
+                <div class="content">
+                    <div class="content-item">Status overview</div>
+                    <div class="content-item">What works (completed features)</div>
+                    <div class="content-item">What's left to build</div>
+                    <div class="content-item">Known issues</div>
+                    <div class="content-item">Launch readiness metrics</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Development Section -->
+        <div class="section">
+            <h2 class="section-title"><span class="page-icon">💻</span>Development</h2>
+            
+            <div class="subpage">
+                <h3 class="subpage-title"><span class="page-icon">📄</span>System Architecture</h3>
+                <div class="content">
+                    <div class="content-item">Architecture diagrams</div>
+                    <div class="content-item">Data models</div>
+                    <div class="content-item">Integration patterns</div>
+                    <div class="content-item">Authentication & authorization</div>
+                    <div class="content-item">Error handling</div>
+                </div>
+            </div>
+            
+            <div class="subpage">
+                <h3 class="subpage-title"><span class="page-icon">📄</span>Technical Context</h3>
+                <div class="content">
+                    <div class="content-item">Technology stack</div>
+                    <div class="content-item">Development environment</div>
+                    <div class="content-item">API integrations</div>
+                    <div class="content-item">Third-party dependencies</div>
+                    <div class="content-item">Technical constraints</div>
+                </div>
+            </div>
+            
+            <div class="database">
+                <h3 class="database-title"><span class="page-icon">🗃️</span>Code Snippets</h3>
+                <div class="properties">
+                    <div class="property">Name <span class="property-type">(Title)</span></div>
+                    <div class="property">Language <span class="property-type">(Select)</span></div>
+                    <div class="property">Purpose <span class="property-type">(Text)</span></div>
+                    <div class="property">Author <span class="property-type">(Person)</span></div>
+                    <div class="property">Created Date <span class="property-type">(Date)</span></div>
+                    <div class="property">Code <span class="property-type">(Code Block)</span></div>
+                    <div class="property">Tags <span class="property-type">(Multi-select)</span></div>
+                </div>
+                <div class="views">
+                    <div class="view">All Snippets</div>
+                    <div class="view">By Language</div>
+                    <div class="view">By Author</div>
+                    <div class="view">Recently Added</div>
+                </div>
+            </div>
+            
+            <div class="subpage">
+                <h3 class="subpage-title"><span class="page-icon">📄</span>Development Guidelines</h3>
+                <div class="content">
+                    <div class="content-item">Naming conventions</div>
+                    <div class="content-item">Code organization</div>
+                    <div class="content-item">State management</div>
+                    <div class="content-item">Commit practices</div>
+                    <div class="content-item">Environment setup</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Design Section -->
+        <div class="section">
+            <h2 class="section-title"><span class="page-icon">🎨</span>Design</h2>
+            
+            <div class="subpage">
+                <h3 class="subpage-title"><span class="page-icon">📄</span>Design Guidelines</h3>
+                <div class="content">
+                    <div class="content-item">AAC representation guidelines</div>
+                    <div class="content-item">Sensory considerations</div>
+                    <div class="content-item">Accessibility standards</div>
+                    <div class="content-item">Design principles</div>
+                    <div class="content-item">Component usage</div>
+                </div>
+            </div>
+            
+            <div class="subpage">
+                <h3 class="subpage-title"><span class="page-icon">📄</span>Brand Assets</h3>
+                <div class="content">
+                    <div class="content-item">Logo files</div>
+                    <div class="content-item">Color palette</div>
+                    <div class="content-item">Typography</div>
+                    <div class="content-item">Iconography</div>
+                    <div class="content-item">Photography style</div>
+                </div>
+            </div>
+            
+            <div class="database">
+                <h3 class="database-title"><span class="page-icon">🗃️</span>Product Designs</h3>
+                <div class="properties">
+                    <div class="property">Name <span class="property-type">(Title)</span></div>
+                    <div class="property">Collection <span class="property-type">(Select)</span></div>
+                    <div class="property">Status <span class="property-type">(Select)</span></div>
+                    <div class="property">Designer <span class="property-type">(Person)</span></div>
+                    <div class="property">Approval Status <span class="property-type">(Select)</span></div>
+                    <div class="property">Design Files <span class="property-type">(Files)</span></div>
+                    <div class="property">Related Products <span class="property-type">(Relation)</span></div>
+                </div>
+                <div class="views">
+                    <div class="view">All Designs</div>
+                    <div class="view">By Collection</div>
+                    <div class="view">By Status</div>
+                    <div class="view">By Designer</div>
+                    <div class="view">Needs Approval</div>
+                </div>
+            </div>
+            
+            <div class="subpage">
+                <h3 class="subpage-title"><span class="page-icon">📄</span>UI Components</h3>
+                <div class="content">
+                    <div class="content-item">Component library</div>
+                    <div class="content-item">Usage examples</div>
+                    <div class="content-item">Responsive behavior</div>
+                    <div class="content-item">State variations</div>
+                    <div class="content-item">Accessibility notes</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Business Section -->
+        <div class="section">
+            <h2 class="section-title"><span class="page-icon">📊</span>Business</h2>
+            
+            <div class="subpage">
+                <h3 class="subpage-title"><span class="page-icon">📄</span>Implementation Plan</h3>
+                <div class="content">
+                    <div class="content-item">Timeline</div>
+                    <div class="content-item">Resource allocation</div>
+                    <div class="content-item">Dependencies</div>
+                    <div class="content-item">Risk assessment</div>
+                    <div class="content-item">Success criteria</div>
+                </div>
+            </div>
+            
+            <div class="database">
+                <h3 class="database-title"><span class="page-icon">🗃️</span>Task List</h3>
+                <div class="properties">
+                    <div class="property">Name <span class="property-type">(Title)</span></div>
+                    <div class="property">Status <span class="property-type">(Select)</span></div>
+                    <div class="property">Priority <span class="property-type">(Select)</span></div>
+                    <div class="property">Department <span class="property-type">(Select)</span></div>
+                    <div class="property">Assignee <span class="property-type">(Person)</span></div>
+                    <div class="property">Due Date <span class="property-type">(Date)</span></div>
+                    <div class="property">Description <span class="property-type">(Text)</span></div>
+                    <div class="property">Dependencies <span class="property-type">(Relation)</span></div>
+                </div>
+                <div class="views">
+                    <div class="view">All Tasks</div>
+                    <div class="view">By Department</div>
+                    <div class="view">By Assignee</div>
+                    <div class="view">By Status</div>
+                    <div class="view">Launch Critical</div>
+                    <div class="view">Timeline</div>
+                </div>
+            </div>
+            
+            <div class="subpage">
+                <h3 class="subpage-title"><span class="page-icon">📄</span>Launch Plan</h3>
+                <div class="content">
+                    <div class="content-item">Launch day schedule</div>
+                    <div class="content-item">Team responsibilities</div>
+                    <div class="content-item">Contingency plans</div>
+                    <div class="content-item">Go/no-go criteria</div>
+                    <div class="content-item">Post-launch activities</div>
+                </div>
+            </div>
+            
+            <div class="subpage">
+                <h3 class="subpage-title"><span class="page-icon">📄</span>SEO Strategy</h3>
+                <div class="content">
+                    <div class="content-item">Keyword research</div>
+                    <div class="content-item">Content plan</div>
+                    <div class="content-item">Technical SEO checklist</div>
+                    <div class="content-item">Measurement plan</div>
+                    <div class="content-item">Competitor analysis</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Products Section -->
+        <div class="section">
+            <h2 class="section-title"><span class="page-icon">📦</span>Products</h2>
+            
+            <div class="database">
+                <h3 class="database-title"><span class="page-icon">🗃️</span>Collections Database</h3>
+                <div class="properties">
+                    <div class="property">Name <span class="property-type">(Title)</span></div>
+                    <div class="property">Description <span class="property-type">(Text)</span></div>
+                    <div class="property">Target Audience <span class="property-type">(Multi-select)</span></div>
+                    <div class="property">Launch Date <span class="property-type">(Date)</span></div>
+                    <div class="property">Status <span class="property-type">(Select)</span></div>
+                    <div class="property">Products <span class="property-type">(Relation)</span></div>
+                    <div class="property">Marketing Campaigns <span class="property-type">(Relation)</span></div>
+                </div>
+                <div class="views">
+                    <div class="view">All Collections</div>
+                    <div class="view">By Status</div>
+                    <div class="view">By Launch Date</div>
+                    <div class="view">By Audience</div>
+                </div>
+            </div>
+            
+            <div class="database">
+                <h3 class="database-title"><span class="page-icon">🗃️</span>Product Database</h3>
+                <div class="properties">
+                    <div class="property">Name <span class="property-type">(Title)</span></div>
+                    <div class="property">SKU <span class="property-type">(Text)</span></div>
+                    <div class="property">Collection <span class="property-type">(Relation)</span></div>
+                    <div class="property">Target Audience <span class="property-type">(Multi-select)</span></div>
+                    <div class="property">Price <span class="property-type">(Number)</span></div>
+                    <div class="property">Material <span class="property-type">(Select)</span></div>
+                    <div class="property">Sensory Features <span class="property-type">(Multi-select)</span></div>
+                    <div class="property">Description <span class="property-type">(Text)</span></div>
+                    <div class="property">Status <span class="property-type">(Select)</span></div>
+                    <div class="property">Images <span class="property-type">(Files)</span></div>
+                    <div class="property">Inventory Items <span class="property-type">(Relation)</span></div>
+                </div>
+                <div class="views">
+                    <div class="view">All Products</div>
+                    <div class="view">By Collection</div>
+                    <div class="view">By Status</div>
+                    <div class="view">By Audience</div>
+                    <div class="view">Launch Timeline</div>
+                </div>
+            </div>
+            
+            <div class="database">
+                <h3 class="database-title"><span class="page-icon">🗃️</span>Inventory Tracker</h3>
+                <div class="properties">
+                    <div class="property">Variant <span class="property-type">(Title)</span></div>
+                    <div class="property">Product <span class="property-type">(Relation)</span></div>
+                    <div class="property">Size <span class="property-type">(Select)</span></div>
+                    <div class="property">Color <span class="property-type">(Select)</span></div>
+                    <div class="property">Stock Level <span class="property-type">(Number)</span></div>
+                    <div class="property">Reorder Threshold <span class="property-type">(Number)</span></div>
+                    <div class="property">Reorder Status <span class="property-type">(Formula)</span></div>
+                    <div class="property">Supplier <span class="property-type">(Relation)</span></div>
+                    <div class="property">Production Batch <span class="property-type">(Text)</span></div>
+                </div>
+                <div class="views">
+                    <div class="view">All Inventory</div>
+                    <div class="view">Low Stock</div>
+                    <div class="view">By Product</div>
+                    <div class="view">By Size</div>
+                    <div class="view">By Supplier</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Additional sections would continue here -->
+        <div class="callout">
+            <div class="callout-icon">🔍</div>
+            <div class="callout-content">
+                <strong>Note:</strong> This template includes the core structure for the Different Not Less Apparel Notion workspace. Additional sections for Marketing, Testing, Deployment, Analytics, Customer Service, and Legal would follow the same pattern as shown above.
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2 class="section-title">Implementation Steps</h2>
+            
+            <div class="toggle">
+                <div class="toggle-title">1. Initial Setup</div>
+                <div class="toggle-content">
+                    <ul>
+                        <li>Create workspace</li>
+                        <li>Set up top-level pages</li>
+                        <li>Configure workspace settings and permissions</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="toggle">
+                <div class="toggle-title">2. Core Structure</div>
+                <div class="toggle-content">
+                    <ul>
+                        <li>Build out main section pages</li>
+                        <li>Create primary databases</li>
+                        <li>Set up templates</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="toggle">
+                <div class="toggle-title">3. Content Migration</div>
+                <div class="toggle-content">
+                    <ul>
+                        <li>Transfer content from Memory Bank</li>
+                        <li>Import existing data from other tools</li>
+                        <li>Set up integrations</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="toggle">
+                <div class="toggle-title">4. Team Onboarding</div>
+                <div class="toggle-content">
+                    <ul>
+                        <li>Create user accounts</li>
+                        <li>Conduct training sessions</li>
+                        <li>Document workspace guidelines</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="toggle">
+                <div class="toggle-title">5. Ongoing Maintenance</div>
+                <div class="toggle-content">
+                    <ul>
+                        <li>Regular audits of structure and content</li>
+                        <li>Updates to templates and processes</li>
+                        <li>Refinement based on team feedback</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="callout">
+            <div class="callout-icon">📅</div>
+            <div class="callout-content">
+                <strong>Launch Countdown:</strong> 3 days until launch on April 2, 2025!
+            </div>
+        </div>
+    </div>
+</body>
+</html>

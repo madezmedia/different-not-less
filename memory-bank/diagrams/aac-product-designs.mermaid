@@ -1,0 +1,149 @@
+graph TD
+    subgraph "Product Collections"
+        YWM["Your Words Matter Collection"]
+        DNL["Different Not Less Collection"]
+        SLP["SLP Professional Collection"]
+        BCBA["BCBA/RBT Collection"]
+    end
+    
+    subgraph "Design Categories"
+        AAC["AAC Device Designs"]
+        COMM["Communication Board Designs"]
+        NEURO["Neurodiversity Designs"]
+        SIGN["Sign Language Designs"]
+        SPEECH["Speech Bubble Designs"]
+        PROF["Professional Terminology Designs"]
+    end
+    
+    subgraph "Target Audiences"
+        SLPs["Speech-Language Pathologists"]
+        TEACHERS["Special Education Teachers"]
+        PARENTS["Parents/Caregivers"]
+        BCBAS["Behavior Analysts/RBTs"]
+        USERS["AAC Users"]
+        GENERAL["General Public"]
+    end
+    
+    %% Your Words Matter Collection connections
+    YWM --> AAC
+    YWM --> COMM
+    YWM --> SPEECH
+    
+    %% Different Not Less Collection connections
+    DNL --> NEURO
+    DNL --> SPEECH
+    
+    %% SLP Professional Collection connections
+    SLP --> AAC
+    SLP --> PROF
+    SLP --> COMM
+    
+    %% BCBA/RBT Collection connections
+    BCBA --> PROF
+    BCBA --> COMM
+    
+    %% Design to audience connections
+    AAC --> SLPs
+    AAC --> TEACHERS
+    
+    COMM --> SLPs
+    COMM --> TEACHERS
+    COMM --> BCBAS
+    
+    NEURO --> PARENTS
+    NEURO --> TEACHERS
+    NEURO --> GENERAL
+    
+    SIGN --> SLPs
+    SIGN --> TEACHERS
+    
+    SPEECH --> SLPs
+    SPEECH --> PARENTS
+    SPEECH --> GENERAL
+    
+    PROF --> SLPs
+    PROF --> BCBAS
+    
+    %% Key designs
+    subgraph "Your Words Matter Key Designs"
+        YWM1["'Your Words Matter' with AAC device"]
+        YWM2["'Communication Is A Human Right' with speech bubbles"]
+        YWM3["'All Communication Is Valid' with communication board"]
+        YWM4["'Different Ways To Say Hello' with multiple symbols"]
+    end
+    
+    subgraph "Different Not Less Key Designs"
+        DNL1["Neurodiversity infinity symbol with 'Different Not Less'"]
+        DNL2["Embrace Neurodiversity with rainbow infinity symbol"]
+        DNL3["'Celebrate Different Minds' typography design"]
+        DNL4["'Autism Acceptance' gold design with Au chemical symbol"]
+    end
+    
+    subgraph "SLP Professional Key Designs"
+        SLP1["AAC Specialist with detailed device representation"]
+        SLP2["Communication Champion with speech bubbles"]
+        SLP3["'I Help People Find Their Voice' professional design"]
+        SLP4["ASHA-inspired design with communication terminology"]
+    end
+    
+    subgraph "BCBA/RBT Collection Key Designs"
+        BCBA1["'Behavior Is Communication' professional design"]
+        BCBA2["'Creating Communication Opportunities' with symbols"]
+        BCBA3["ABA Therapy Team with subtle professional elements"]
+        BCBA4["'Positive Reinforcement' with communication theme"]
+    end
+    
+    %% Link collections to key designs
+    YWM --> YWM1
+    YWM --> YWM2
+    YWM --> YWM3
+    YWM --> YWM4
+    
+    DNL --> DNL1
+    DNL --> DNL2
+    DNL --> DNL3
+    DNL --> DNL4
+    
+    SLP --> SLP1
+    SLP --> SLP2
+    SLP --> SLP3
+    SLP --> SLP4
+    
+    BCBA --> BCBA1
+    BCBA --> BCBA2
+    BCBA --> BCBA3
+    BCBA --> BCBA4
+    
+    %% Style and Production Connections
+    subgraph "Design Styles"
+        TYPE["Typography-focused"]
+        ILLUST["Illustrative"]
+        MINI["Minimalist"]
+        HAND["Hand-drawn"]
+    end
+    
+    subgraph "Print Methods"
+        WATER["Water-based Screen Printing"]
+        DTG["Direct-to-Garment"]
+    end
+    
+    %% Connect designs to styles and print methods
+    YWM1 --> ILLUST --> DTG
+    YWM2 --> TYPE --> WATER
+    YWM3 --> ILLUST --> DTG
+    YWM4 --> MINI --> WATER
+    
+    DNL1 --> MINI --> WATER
+    DNL2 --> ILLUST --> DTG
+    DNL3 --> TYPE --> WATER
+    DNL4 --> MINI --> WATER
+    
+    SLP1 --> ILLUST --> DTG
+    SLP2 --> TYPE --> WATER
+    SLP3 --> TYPE --> WATER
+    SLP4 --> MINI --> WATER
+    
+    BCBA1 --> TYPE --> WATER
+    BCBA2 --> ILLUST --> DTG
+    BCBA3 --> MINI --> WATER
+    BCBA4 --> TYPE --> WATER
