@@ -1,0 +1,110 @@
+# Different Not Less MCP Integration & CI/CD Rules
+
+## MCP Usage Patterns
+
+### GitHub MCP Server
+- Use GitHub MCP for automating code operations and CI/CD workflows
+- Create issues for build failures using the `reportFailedBuild` function
+- Auto-merge PRs that pass all checks using the `autoPRMerge` function
+- Track deployment status using the `updateDeploymentStatus` function
+- Create rollback PRs when needed using the `createRollbackPR` function
+
+### Shopify MCP Server
+- Use Shopify MCP for product management and e-commerce operations
+- Sync product data between Shopify and the website
+- Retrieve product collections for display on the website
+- Get shop details for configuration and branding
+
+### Airtable MCP Server
+- Use Airtable MCP for inventory management
+- Track inventory levels and sync with Shopify
+- Manage product variants and attributes
+- Store detailed product information
+
+### Software Planning MCP
+- Use for sprint planning and feature development
+- Create planning sessions for new features
+- Break down features into tasks with complexity scores
+- Track implementation progress
+
+## CI/CD Workflow Rules
+
+### Branch Naming Conventions
+- Feature branches: `feature/DNL-[number]-[description]`
+- Bug fix branches: `fix/DNL-[number]-[description]`
+- Hotfix branches: `hotfix/DNL-[number]-[description]`
+- Release branches: `release/v[major].[minor].[patch]`
+- Rollback branches: `rollback/[environment]-[timestamp]`
+
+### Pull Request Guidelines
+- PRs require at least one approval before merging
+- All CI checks must pass before merging
+- PR title should include ticket number: `[DNL-123] Add feature X`
+- PR description should include:
+  - What changes were made
+  - Why the changes were made
+  - How to test the changes
+  - Screenshots (if UI changes)
+
+### Deployment Rules
+- Development branch deploys automatically to staging
+- Main branch deploys automatically to production after approval
+- Production deployments require manual approval
+- All deployments are tagged with `[environment]-[timestamp]`
+- Rollbacks should be performed via the rollback PR process
+
+### Environment Variables
+- Environment variables are stored as GitHub Secrets
+- Required secrets:
+  - SHOPIFY_ACCESS_TOKEN
+  - MYSHOPIFY_DOMAIN
+  - AIRTABLE_API_KEY
+  - SANITY_PROJECT_ID
+  - VERCEL_TOKEN
+
+### Testing Requirements
+- Linting must pass for all code changes
+- TypeScript type checking must pass
+- Build must complete successfully
+- Future: Unit tests must pass (to be implemented)
+- Future: E2E tests must pass (to be implemented)
+
+## Integration Checkpoints
+
+### Pre-Deployment Checklist
+- All CI checks pass
+- PR has been reviewed and approved
+- Environment variables are configured correctly
+- Deployment preview has been tested
+
+### Post-Deployment Verification
+- Verify the website loads correctly
+- Check critical user flows (product browsing, cart, checkout)
+- Verify Shopify integration is working
+- Verify Airtable inventory sync is working
+
+## Monitoring & Alerts
+
+### Deployment Notifications
+- Successful deployments notify the team via Slack
+- Failed deployments create GitHub issues and notify the team
+- Rollbacks trigger high-priority alerts
+
+### Performance Monitoring
+- Monitor page load times after deployments
+- Track error rates and user experience metrics
+- Alert on significant performance degradation
+
+## Emergency Procedures
+
+### Rollback Process
+1. Identify the issue and affected systems
+2. Create a rollback PR using the `createRollbackPR` function
+3. Get expedited approval for the rollback
+4. Deploy the rollback
+5. Document the incident and create follow-up tasks
+
+### Critical Issues
+- Security vulnerabilities should be addressed immediately
+- Data integrity issues require immediate attention
+- User-facing errors should be prioritized based on impact
