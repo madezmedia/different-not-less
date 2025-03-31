@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "Development": "PVT_kwDOLxyz123",
+    "Launch": "PVT_kwDOLxyz456",
+    "Marketing": "PVT_kwDOLxyz789",
+    "Product": "PVT_kwDOLxyz012"
+  },
+  "views": {
+    "Board": "PVV_lADOLxyz123",
+    "Table": "PVV_lADOLxyz456",
+    "Roadmap": "PVV_lADOLxyz789",
+    "Backlog": "PVV_lADOLxyz012"
+  },
+  "description": "This file maps project names to their GitHub Project IDs and view names to their view IDs. These IDs are used by the GitHub MCP automation functions to update project views. Replace the placeholder IDs with actual GitHub Project and view IDs."
+}

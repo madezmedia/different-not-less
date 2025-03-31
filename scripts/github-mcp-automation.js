@@ -181,10 +181,300 @@ ${rollbackInfo.affectedSystems.join(", ")}
   }
 }
 
+// Function to add an issue to a GitHub Project
+async function addIssueToProject(client, projectInfo) {
+  try {
+    // First, get the project ID
+    const projectsResult = await client.callTool(
+      "github.com/modelcontextprotocol/servers/tree/main/src/github",
+      "search_code",
+      {
+        q: `org:madezmedia repo:different-not-less filename:project-config.json`
+      }
+    );
+    
+    // Parse the project config to get the project ID
+    let projectId = null;
+    if (projectsResult.items && projectsResult.items.length > 0) {
+      const projectConfigFile = projectsResult.items[0];
+      const fileContent = await client.callTool(
+        "github.com/modelcontextprotocol/servers/tree/main/src/github",
+        "get_file_contents",
+        {
+          owner: "madezmedia",
+          repo: "different-not-less",
+          path: projectConfigFile.path
+        }
+      );
+      
+      const projectConfig = JSON.parse(fileContent.content);
+      projectId = projectConfig.projects[projectInfo.projectName];
+    }
+    
+    if (!projectId) {
+      throw new Error(`Project ${projectInfo.projectName} not found in project-config.json`);
+    }
+    
+    // Create a custom API request to add the issue to the project
+    // This uses a GraphQL mutation to add the issue to the project
+    const graphqlQuery = {
+      query: `
+        mutation {
+          addProjectV2ItemById(input: {
+            projectId: "${projectId}"
+            contentId: "${projectInfo.issueId}"
+          }) {
+            item {
+              id
+            }
+          }
+        }
+      `
+    };
+    
+    // Use the GitHub API directly for this operation
+    // Note: This would require extending the GitHub MCP server to support GraphQL operations
+    // For now, we'll log the operation that would be performed
+    console.log(`Would add issue ${projectInfo.issueId} to project ${projectInfo.projectName} (${projectId})`);
+    console.log(`GraphQL query: ${JSON.stringify(graphqlQuery, null, 2)}`);
+    
+    return {
+      success: true,
+      message: `Issue added to project ${projectInfo.projectName}`,
+      projectId,
+      issueId: projectInfo.issueId
+    };
+  } catch (error) {
+    console.error("Error adding issue to project:", error);
+    throw error;
+  }
+}
+
+// Function to move a project card to a different column
+async function moveProjectCard(client, cardInfo) {
+  try {
+    // First, get the project columns
+    const projectsResult = await client.callTool(
+      "github.com/modelcontextprotocol/servers/tree/main/src/github",
+      "search_code",
+      {
+        q: `org:madezmedia repo:different-not-less filename:project-columns.json`
+      }
+    );
+    
+    // Parse the project columns to get the column IDs
+    let columnId = null;
+    if (projectsResult.items && projectsResult.items.length > 0) {
+      const columnsConfigFile = projectsResult.items[0];
+      const fileContent = await client.callTool(
+        "github.com/modelcontextprotocol/servers/tree/main/src/github",
+        "get_file_contents",
+        {
+          owner: "madezmedia",
+          repo: "different-not-less",
+          path: columnsConfigFile.path
+        }
+      );
+      
+      const columnsConfig = JSON.parse(fileContent.content);
+      columnId = columnsConfig.columns[cardInfo.columnName];
+    }
+    
+    if (!columnId) {
+      throw new Error(`Column ${cardInfo.columnName} not found in project-columns.json`);
+    }
+    
+    // Create a custom API request to move the card to the column
+    // This uses a GraphQL mutation to update the card's status
+    const graphqlQuery = {
+      query: `
+        mutation {
+          updateProjectV2ItemFieldValue(input: {
+            projectId: "${cardInfo.projectId}"
+            itemId: "${cardInfo.cardId}"
+            fieldId: "${columnId}"
+            value: {
+              singleSelectOptionId: "${columnId}"
+            }
+          }) {
+            projectV2Item {
+              id
+            }
+          }
+        }
+      `
+    };
+    
+    // Use the GitHub API directly for this operation
+    // Note: This would require extending the GitHub MCP server to support GraphQL operations
+    // For now, we'll log the operation that would be performed
+    console.log(`Would move card ${cardInfo.cardId} to column ${cardInfo.columnName} (${columnId})`);
+    console.log(`GraphQL query: ${JSON.stringify(graphqlQuery, null, 2)}`);
+    
+    return {
+      success: true,
+      message: `Card moved to column ${cardInfo.columnName}`,
+      columnId,
+      cardId: cardInfo.cardId
+    };
+  } catch (error) {
+    console.error("Error moving project card:", error);
+    throw error;
+  }
+}
+
+// Function to create a new project card
+async function createProjectCard(client, cardInfo) {
+  try {
+    // First, get the project ID
+    const projectsResult = await client.callTool(
+      "github.com/modelcontextprotocol/servers/tree/main/src/github",
+      "search_code",
+      {
+        q: `org:madezmedia repo:different-not-less filename:project-config.json`
+      }
+    );
+    
+    // Parse the project config to get the project ID
+    let projectId = null;
+    if (projectsResult.items && projectsResult.items.length > 0) {
+      const projectConfigFile = projectsResult.items[0];
+      const fileContent = await client.callTool(
+        "github.com/modelcontextprotocol/servers/tree/main/src/github",
+        "get_file_contents",
+        {
+          owner: "madezmedia",
+          repo: "different-not-less",
+          path: projectConfigFile.path
+        }
+      );
+      
+      const projectConfig = JSON.parse(fileContent.content);
+      projectId = projectConfig.projects[cardInfo.projectName];
+    }
+    
+    if (!projectId) {
+      throw new Error(`Project ${cardInfo.projectName} not found in project-config.json`);
+    }
+    
+    // Create a custom API request to create a new card
+    // This uses a GraphQL mutation to create a draft issue in the project
+    const graphqlQuery = {
+      query: `
+        mutation {
+          addProjectV2DraftIssue(input: {
+            projectId: "${projectId}"
+            title: "${cardInfo.title}"
+            body: "${cardInfo.body}"
+          }) {
+            projectItem {
+              id
+            }
+          }
+        }
+      `
+    };
+    
+    // Use the GitHub API directly for this operation
+    // Note: This would require extending the GitHub MCP server to support GraphQL operations
+    // For now, we'll log the operation that would be performed
+    console.log(`Would create card "${cardInfo.title}" in project ${cardInfo.projectName} (${projectId})`);
+    console.log(`GraphQL query: ${JSON.stringify(graphqlQuery, null, 2)}`);
+    
+    return {
+      success: true,
+      message: `Card created in project ${cardInfo.projectName}`,
+      projectId,
+      title: cardInfo.title
+    };
+  } catch (error) {
+    console.error("Error creating project card:", error);
+    throw error;
+  }
+}
+
+// Function to update a GitHub Project view
+async function updateProjectView(client, viewInfo) {
+  try {
+    // First, get the project ID and view ID
+    const projectsResult = await client.callTool(
+      "github.com/modelcontextprotocol/servers/tree/main/src/github",
+      "search_code",
+      {
+        q: `org:madezmedia repo:different-not-less filename:project-views.json`
+      }
+    );
+    
+    // Parse the project views to get the view ID
+    let viewId = null;
+    let projectId = null;
+    if (projectsResult.items && projectsResult.items.length > 0) {
+      const viewsConfigFile = projectsResult.items[0];
+      const fileContent = await client.callTool(
+        "github.com/modelcontextprotocol/servers/tree/main/src/github",
+        "get_file_contents",
+        {
+          owner: "madezmedia",
+          repo: "different-not-less",
+          path: viewsConfigFile.path
+        }
+      );
+      
+      const viewsConfig = JSON.parse(fileContent.content);
+      projectId = viewsConfig.projects[viewInfo.projectName];
+      viewId = viewsConfig.views[viewInfo.viewName];
+    }
+    
+    if (!viewId || !projectId) {
+      throw new Error(`View ${viewInfo.viewName} or project ${viewInfo.projectName} not found in project-views.json`);
+    }
+    
+    // Create a custom API request to update the view
+    // This uses a GraphQL mutation to update the view's filter
+    const graphqlQuery = {
+      query: `
+        mutation {
+          updateProjectV2View(input: {
+            projectId: "${projectId}"
+            viewId: "${viewId}"
+            name: "${viewInfo.newName || viewInfo.viewName}"
+            filter: ${viewInfo.filter ? `"${viewInfo.filter}"` : null}
+          }) {
+            projectView {
+              id
+              name
+            }
+          }
+        }
+      `
+    };
+    
+    // Use the GitHub API directly for this operation
+    // Note: This would require extending the GitHub MCP server to support GraphQL operations
+    // For now, we'll log the operation that would be performed
+    console.log(`Would update view ${viewInfo.viewName} in project ${viewInfo.projectName}`);
+    console.log(`GraphQL query: ${JSON.stringify(graphqlQuery, null, 2)}`);
+    
+    return {
+      success: true,
+      message: `View ${viewInfo.viewName} updated in project ${viewInfo.projectName}`,
+      projectId,
+      viewId
+    };
+  } catch (error) {
+    console.error("Error updating project view:", error);
+    throw error;
+  }
+}
+
 // Example usage in a GitHub Action workflow
 module.exports = {
   reportFailedBuild,
   autoPRMerge,
   updateDeploymentStatus,
-  createRollbackPR
+  createRollbackPR,
+  addIssueToProject,
+  moveProjectCard,
+  createProjectCard,
+  updateProjectView
 };

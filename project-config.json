@@ -1,0 +1,9 @@
+{
+  "projects": {
+    "Development": "PVT_kwDOLxyz123",
+    "Launch": "PVT_kwDOLxyz456",
+    "Marketing": "PVT_kwDOLxyz789",
+    "Product": "PVT_kwDOLxyz012"
+  },
+  "description": "This file maps project names to their GitHub Project IDs. These IDs are used by the GitHub MCP automation functions to interact with GitHub Projects. Replace the placeholder IDs with actual GitHub Project IDs."
+}

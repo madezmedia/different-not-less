@@ -1,0 +1,9 @@
+{
+  "columns": {
+    "To Do": "f75ad846",
+    "In Progress": "47fc9ee4",
+    "Review": "98d73e1c",
+    "Done": "cb912f8a"
+  },
+  "description": "This file maps column names to their GitHub Project column IDs. These IDs are used by the GitHub MCP automation functions to move cards between columns. Replace the placeholder IDs with actual GitHub Project column IDs."
+}
