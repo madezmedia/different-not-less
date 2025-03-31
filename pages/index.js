@@ -1,4 +1,5 @@
 import Head from 'next/head';
+import Image from 'next/image';
 import styles from '../styles/Home.module.css';
 
 export default function Home() {
@@ -11,6 +12,18 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
+        <div className={styles.logoContainer}>
+          <Image 
+            src="/difnotless.png" 
+            alt="Different Not Less Apparel" 
+            width={300} 
+            height={80} 
+            className={styles.mainLogo}
+            priority
+            style={{ width: 'auto', height: 'auto' }}
+          />
+        </div>
+        
         <h1 className={styles.title}>
           Welcome to <span className={styles.highlight}>Different Not Less</span> Apparel
         </h1>

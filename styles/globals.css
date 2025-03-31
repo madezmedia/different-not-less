@@ -1,8 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Open+Sans:wght@300;400;600&display=swap');
+
 html,
 body {
   padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+  font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 }
 
@@ -16,21 +18,65 @@ a {
 }
 
 :root {
-  --primary-color: #0070f3;
-  --secondary-color: #ff4081;
-  --background-color: #f9f9f9;
-  --text-color: #333;
+  /* Primary Brand Colors */
+  --communication-gold: #D4B95E;
+  --heart-teal: #3DADA7;
+  --deep-navy: #1A3A5F;
+  --soft-cream: #F7F3E4;
+  
+  /* Secondary Colors */
+  --neurodiversity-purple: #7B4C9D;
+  --aac-blue: #4C7BD3;
+  --education-green: #5AAD54;
+  --warm-coral: #E67358;
+  
+  /* Functional Variables */
+  --primary-color: var(--communication-gold);
+  --secondary-color: var(--heart-teal);
+  --background-color: var(--soft-cream);
+  --text-color: var(--deep-navy);
   --border-color: #eaeaea;
+  
+  /* Typography */
+  --heading-font: 'Montserrat', sans-serif;
+  --body-font: 'Montserrat', sans-serif;
+  --secondary-font: 'Open Sans', sans-serif;
 }
 
 body {
   background-color: var(--background-color);
   color: var(--text-color);
+  font-family: var(--body-font);
+  line-height: 1.5;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--heading-font);
+  font-weight: 600;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+}
+
+h1 {
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+h2 {
+  font-size: 1.5rem;
+}
+
+h3 {
+  font-size: 1.125rem;
+}
+
+p {
+  margin-bottom: 1.5em;
 }
 
 /* Accessibility improvements */
 :focus {
-  outline: 2px solid var(--primary-color);
+  outline: 2px solid var(--heart-teal);
   outline-offset: 2px;
 }
 

@@ -3,7 +3,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 1rem 2rem;
-  background-color: #ffffff;
+  background-color: var(--soft-cream);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   position: sticky;
   top: 0;
@@ -21,11 +21,23 @@
   text-decoration: none;
 }
 
-.logoText {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: var(--primary-color);
-  margin-left: 0.5rem;
+.logoImage {
+  height: auto !important;
+  width: auto;
+  max-height: 50px;
+  object-fit: contain;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
 }
 
 .nav {
@@ -46,15 +58,16 @@
 
 .navLink {
   font-size: 1rem;
-  color: var(--text-color);
+  color: var(--deep-navy);
   text-decoration: none;
   padding: 0.5rem 0;
   position: relative;
   transition: color 0.3s ease;
+  font-weight: 500;
 }
 
 .navLink:hover {
-  color: var(--primary-color);
+  color: var(--heart-teal);
 }
 
 .navLink:hover::after {
@@ -64,7 +77,7 @@
   left: 0;
   width: 100%;
   height: 2px;
-  background-color: var(--primary-color);
+  background-color: var(--heart-teal);
 }
 
 @media (max-width: 768px) {

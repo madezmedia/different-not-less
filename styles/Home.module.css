@@ -18,6 +18,18 @@
   width: 100%;
 }
 
+.logoContainer {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.mainLogo {
+  height: auto !important;
+  width: auto;
+  max-height: 80px;
+  object-fit: contain;
+}
+
 .footer {
   width: 100%;
   height: 60px;
@@ -35,7 +47,7 @@
 }
 
 .highlight {
-  color: #0070f3;
+  color: var(--heart-teal);
 }
 
 .description {
@@ -49,9 +61,9 @@
   margin: 2rem 0;
   padding: 1.5rem;
   text-align: center;
-  border: 2px solid #0070f3;
+  border: 2px solid var(--communication-gold);
   border-radius: 10px;
-  background-color: rgba(0, 112, 243, 0.05);
+  background-color: rgba(212, 185, 94, 0.1);
 }
 
 .countdown h2 {
@@ -77,11 +89,11 @@
   margin: 1rem;
   padding: 1.5rem;
   text-align: left;
-  color: inherit;
+  color: var(--deep-navy);
   text-decoration: none;
   border: 1px solid #eaeaea;
   border-radius: 10px;
-  transition: color 0.15s ease, border-color 0.15s ease;
+  transition: color 0.15s ease, border-color 0.15s ease, transform 0.2s ease;
   width: calc(50% - 2rem);
   background-color: #ffffff;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -90,18 +102,24 @@
 .card:hover,
 .card:focus,
 .card:active {
-  border-color: #0070f3;
+  border-color: var(--heart-teal);
+  transform: translateY(-3px);
 }
 
 .card h2 {
   margin: 0 0 1rem 0;
   font-size: 1.5rem;
+  color: var(--deep-navy);
+  font-family: var(--heading-font);
+  font-weight: 600;
 }
 
 .card p {
   margin: 0;
   font-size: 1.25rem;
   line-height: 1.5;
+  font-family: var(--secondary-font);
+  color: var(--deep-navy);
 }
 
 @media (max-width: 768px) {

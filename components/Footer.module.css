@@ -1,7 +1,8 @@
 .footer {
-  background-color: #f5f5f5;
+  background-color: var(--deep-navy);
   padding: 3rem 0 1rem;
   margin-top: 3rem;
+  color: var(--soft-cream);
 }
 
 .container {
@@ -20,18 +21,32 @@
   padding: 0 1rem;
 }
 
+.logoContainer {
+  margin-bottom: 1rem;
+}
+
+.footerLogo {
+  height: auto !important;
+  width: auto;
+  max-height: 45px;
+  object-fit: contain;
+  filter: brightness(1.1);
+}
+
 .title {
   font-size: 1.2rem;
   font-weight: 600;
   margin-bottom: 1.5rem;
-  color: var(--text-color);
+  color: var(--communication-gold);
+  font-family: var(--heading-font);
 }
 
 .description {
   font-size: 0.9rem;
   line-height: 1.5;
-  color: #666;
+  color: var(--soft-cream);
   max-width: 300px;
+  font-family: var(--secondary-font);
 }
 
 .links {
@@ -46,20 +61,21 @@
 
 .link {
   font-size: 0.9rem;
-  color: #666;
+  color: var(--soft-cream);
   text-decoration: none;
   transition: color 0.2s ease;
+  font-family: var(--secondary-font);
 }
 
 .link:hover {
-  color: var(--primary-color);
+  color: var(--heart-teal);
 }
 
 .bottom {
   max-width: 1200px;
   margin: 0 auto;
   padding: 1.5rem 1rem 0;
-  border-top: 1px solid #e0e0e0;
+  border-top: 1px solid rgba(247, 243, 228, 0.2);
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
@@ -68,8 +84,10 @@
 
 .copyright {
   font-size: 0.85rem;
-  color: #777;
+  color: var(--soft-cream);
+  opacity: 0.8;
   margin: 0.5rem 0;
+  font-family: var(--secondary-font);
 }
 
 .legal {
@@ -78,14 +96,17 @@
 
 .legalLink {
   font-size: 0.85rem;
-  color: #777;
+  color: var(--soft-cream);
+  opacity: 0.8;
   text-decoration: none;
   margin-left: 1.5rem;
   transition: color 0.2s ease;
+  font-family: var(--secondary-font);
 }
 
 .legalLink:hover {
-  color: var(--primary-color);
+  color: var(--heart-teal);
+  opacity: 1;
 }
 
 @media (max-width: 768px) {
