@@ -1,5 +1,43 @@
 # Different Not Less MCP Integration & CI/CD Rules
 
+## Session Conclusion Workflow
+
+### Memory Bank Updates
+- Update activeContext.md with completed tasks and current status
+- Update progress.md with latest achievements and metrics
+- Document any new decisions in relevant knowledge files
+- Create/update technical documentation for implemented features
+
+### Task Management Process
+- Mark completed tasks with [x] in activeContext.md
+- Update GitHub Projects using appropriate MCP commands
+- Prioritize next tasks with clear descriptions
+- Add any discovered tasks to activeContext.md
+
+### Code Management Rules
+- Group related changes into focused commits
+- Write descriptive commit messages with ticket numbers: `[DNL-123] Add feature X`
+- Include test plans or verification methods in PR descriptions
+- Document any technical debt created with clear explanations
+
+### GitHub Integration Process
+- Push to feature branches following naming convention: `feature/DNL-[number]-[description]`
+- Create PRs with comprehensive descriptions including:
+  - What changes were made
+  - Why the changes were made
+  - How to test the changes
+  - Screenshots (if UI changes)
+- Ensure CI checks pass before requesting review
+
+### Session Documentation Format
+- Session summary template:
+  - Session date and duration
+  - Key accomplishments
+  - Challenges encountered
+  - Decisions made
+  - Next steps
+- Store session summaries in memory-bank/sessions/ directory
+
 ## MCP Usage Patterns
 
 ### GitHub MCP Server

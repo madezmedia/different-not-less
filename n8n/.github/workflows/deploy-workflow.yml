@@ -1,0 +1,77 @@
+name: Deploy n8n Workflow
+
+on:
+  push:
+    branches:
+      - main
+      - master
+    paths:
+      - 'n8n/product-creation-workflow.json'
+      - 'n8n/.github/workflows/deploy-workflow.yml'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - production
+          - staging
+          - development
+
+jobs:
+  deploy:
+    name: Deploy n8n Workflow
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      
+      - name: Deploy to Production
+        if: github.event.inputs.environment == 'production' || github.event.inputs.environment == null
+        working-directory: ./n8n
+        env:
+          N8N_URL: ${{ secrets.N8N_PROD_URL }}
+          N8N_API_KEY: ${{ secrets.N8N_PROD_API_KEY }}
+          N8N_WORKFLOW_ID: ${{ secrets.N8N_PROD_WORKFLOW_ID }}
+          WORKFLOW_FILE: product-creation-workflow.json
+          ENVIRONMENT: production
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          chmod +x ci-cd-integration.sh
+          ./ci-cd-integration.sh
+      
+      - name: Deploy to Staging
+        if: github.event.inputs.environment == 'staging'
+        working-directory: ./n8n
+        env:
+          N8N_URL: ${{ secrets.N8N_STAGING_URL }}
+          N8N_API_KEY: ${{ secrets.N8N_STAGING_API_KEY }}
+          N8N_WORKFLOW_ID: ${{ secrets.N8N_STAGING_WORKFLOW_ID }}
+          WORKFLOW_FILE: product-creation-workflow.json
+          ENVIRONMENT: staging
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          chmod +x ci-cd-integration.sh
+          ./ci-cd-integration.sh
+      
+      - name: Deploy to Development
+        if: github.event.inputs.environment == 'development'
+        working-directory: ./n8n
+        env:
+          N8N_URL: ${{ secrets.N8N_DEV_URL }}
+          N8N_API_KEY: ${{ secrets.N8N_DEV_API_KEY }}
+          N8N_WORKFLOW_ID: ${{ secrets.N8N_DEV_WORKFLOW_ID }}
+          WORKFLOW_FILE: product-creation-workflow.json
+          ENVIRONMENT: development
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          chmod +x ci-cd-integration.sh
+          ./ci-cd-integration.sh

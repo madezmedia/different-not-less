@@ -1,0 +1,34 @@
+version: '3'
+
+services:
+  # n8n workflow automation
+  n8n:
+    image: n8nio/n8n:latest
+    restart: always
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_HOST=${N8N_HOST:-n8n}
+      - N8N_PORT=${N8N_PORT:-5678}
+      - N8N_PROTOCOL=${N8N_PROTOCOL:-http}
+      - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
+      - WEBHOOK_URL=${WEBHOOK_URL:-http://n8n:5678/}
+      # API credentials
+      - WEBHOOK_API_KEY=${WEBHOOK_API_KEY}
+      - FALAI_API_KEY=${FALAI_API_KEY}
+      - PRINTIFY_API_KEY=${PRINTIFY_API_KEY}
+      - PRINTIFY_SHOP_ID=${PRINTIFY_SHOP_ID}
+      - AIRTABLE_API_KEY=${AIRTABLE_API_KEY}
+      - AIRTABLE_BASE_ID=${AIRTABLE_BASE_ID}
+      # Optional authentication
+      - N8N_BASIC_AUTH_ACTIVE=${N8N_BASIC_AUTH_ACTIVE:-false}
+      - N8N_BASIC_AUTH_USER=${N8N_BASIC_AUTH_USER}
+      - N8N_BASIC_AUTH_PASSWORD=${N8N_BASIC_AUTH_PASSWORD}
+    volumes:
+      - ./n8n-data:/home/node/.n8n
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

@@ -1,0 +1,412 @@
+{
+  "name": "Different Not Less - AAC Designs with Fal.ai",
+  "flow": [
+    {
+      "id": null,
+      "module": "placeholder:Placeholder",
+      "metadata": {
+        "designer": {
+          "x": 0,
+          "y": 0
+        }
+      }
+    },
+    {
+      "id": 8,
+      "module": "openai-gpt-3:CreateCompletion",
+      "version": 1,
+      "parameters": {
+        "__IMTCONN__": "REPLACE_WITH_YOUR_OPENAI_CONNECTION_ID"
+      },
+      "mapper": {
+        "model": "gpt-4o",
+        "top_p": "1",
+        "select": "chat",
+        "messages": [
+          {
+            "role": "system",
+            "content": "You are an AI specialized in generating creative prompts for fal.ai to produce inclusive and authentic AAC (Augmentative and Alternative Communication) and autism acceptance artwork for T-shirts. Your task is to generate diverse, professional, and respectful prompts that describe designs incorporating elements of AAC devices, communication boards, and neurodiversity symbols. Each prompt should include details about colors, symbols, messages, and specific elements that make the artwork suitable for a T-shirt print for SLPs, teachers, parents, and behavior analysts."
+          },
+          {
+            "role": "user",
+            "content": "Generate a detailed prompt for fal.ai to create a random AAC or autism acceptance T-shirt artwork. The prompt should describe a unique design, incorporating elements of communication devices, neurodiversity symbols, or inclusive messaging, with details about colors, shapes, patterns, and any specific visual effects that make the artwork suitable for a T-shirt print.",
+            "imageDetail": "auto"
+          }
+        ],
+        "max_tokens": "0",
+        "temperature": ".8",
+        "n_completions": "1",
+        "response_format": "text",
+        "presence_penalty": "2",
+        "frequency_penalty": "2"
+      },
+      "metadata": {
+        "designer": {
+          "x": 300,
+          "y": 0
+        }
+      }
+    },
+    {
+      "id": 9,
+      "module": "cohere:chat",
+      "version": 1,
+      "parameters": {
+        "__IMTCONN__": "REPLACE_WITH_YOUR_COHERE_CONNECTION_ID"
+      },
+      "mapper": {
+        "p": "0.75",
+        "model": "command-r",
+        "message": "summarize this AAC/autism acceptance design prompt:\n {{8.choices[].message.content}}",
+        "temperature": "0.75",
+        "search_queries_only": false
+      },
+      "metadata": {
+        "designer": {
+          "x": 600,
+          "y": 0
+        }
+      }
+    },
+    {
+      "id": 2,
+      "module": "http:Action",
+      "version": 2,
+      "parameters": {},
+      "mapper": {
+        "url": "https://api.fal.ai/workflows/madezmedia/t-shirt-design-maker",
+        "method": "POST",
+        "headers": {
+          "Authorization": "Bearer {{$env.FAL_API_KEY}}",
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "prompt": "{{8.choices[].message.content}}",
+          "transparent": true,
+          "width": 4500,
+          "height": 5400
+        },
+        "bodyType": "json",
+        "followRedirects": true,
+        "followAllRedirects": false,
+        "rejectUnauthorized": true,
+        "responseType": "json"
+      },
+      "metadata": {
+        "designer": {
+          "x": 900,
+          "y": 0
+        }
+      }
+    },
+    {
+      "id": 3,
+      "module": "openai-gpt-3:CreateCompletion",
+      "version": 1,
+      "parameters": {
+        "__IMTCONN__": "REPLACE_WITH_YOUR_OPENAI_CONNECTION_ID"
+      },
+      "mapper": {
+        "model": "gpt-4",
+        "top_p": ".8",
+        "select": "chat",
+        "messages": [
+          {
+            "role": "assistant",
+            "content": "You are an AI specialized in creating product titles for a brand called 'Different Not Less' that makes apparel celebrating AAC (Augmentative and Alternative Communication) and autism acceptance. Your task is to create engaging, professional, and respectful product titles that would appeal to SLPs (Speech-Language Pathologists), special education teachers, parents of children with autism, and behavior analysts."
+          },
+          {
+            "role": "user",
+            "content": "Create a catchy product title for a AAC/autism acceptance design. The design element to focus on is: {{9.text}}. The title should be engaging and reflective of the unique and artistic qualities of the design."
+          }
+        ],
+        "max_tokens": "50",
+        "temperature": "1",
+        "n_completions": "1",
+        "response_format": "text",
+        "presence_penalty": "2",
+        "frequency_penalty": "2"
+      },
+      "metadata": {
+        "designer": {
+          "x": 1200,
+          "y": 0
+        }
+      }
+    },
+    {
+      "id": 4,
+      "module": "openai-gpt-3:CreateCompletion",
+      "version": 1,
+      "parameters": {
+        "__IMTCONN__": "REPLACE_WITH_YOUR_OPENAI_CONNECTION_ID"
+      },
+      "mapper": {
+        "model": "gpt-4",
+        "top_p": "1",
+        "select": "chat",
+        "messages": [
+          {
+            "role": "system",
+            "content": "You are an AI specialized in creating product descriptions for a brand called 'Different Not Less' that makes apparel celebrating AAC (Augmentative and Alternative Communication) and autism acceptance."
+          },
+          {
+            "role": "user",
+            "content": "Create a product description for a Different Not Less t-shirt featuring: {{9.text}}\nin 400 characters or less. Mention our sensory-friendly materials (100% ring-spun cotton, tagless design) and who would appreciate this design. Add 10 relevant hashtags that would appeal to our target markets (SLPs, teachers, parents, behavior analysts)."
+          }
+        ],
+        "max_tokens": "150",
+        "temperature": "1",
+        "n_completions": "1",
+        "response_format": "text"
+      },
+      "metadata": {
+        "designer": {
+          "x": 1500,
+          "y": 0
+        }
+      }
+    },
+    {
+      "id": 10,
+      "module": "printify:uploadAnImage",
+      "version": 1,
+      "parameters": {
+        "__IMTCONN__": "REPLACE_WITH_YOUR_PRINTIFY_CONNECTION_ID"
+      },
+      "mapper": {
+        "url": "{{2.json.image_url}}",
+        "type": "url",
+        "fileName": "{{3.choices[].message.content}}"
+      },
+      "metadata": {
+        "designer": {
+          "x": 1800,
+          "y": 0
+        }
+      }
+    },
+    {
+      "id": 6,
+      "module": "printify:createAProduct",
+      "version": 1,
+      "parameters": {
+        "__IMTCONN__": "REPLACE_WITH_YOUR_PRINTIFY_CONNECTION_ID"
+      },
+      "mapper": {
+        "tags": [
+          "AAC",
+          "Autism Acceptance",
+          "Speech Therapy",
+          "Special Education"
+        ],
+        "title": "{{3.choices[].message.content}}",
+        "shopId": "REPLACE_WITH_YOUR_PRINTIFY_SHOP_ID",
+        "variants": [
+          {
+            "id": 17391,
+            "price": "2499",
+            "is_enabled": true
+          },
+          {
+            "id": 17392,
+            "price": "2499",
+            "is_enabled": true
+          },
+          {
+            "id": 17393,
+            "price": "2499",
+            "is_enabled": true
+          },
+          {
+            "id": 17394,
+            "price": "2499",
+            "is_enabled": true
+          },
+          {
+            "id": 17395,
+            "price": "2499",
+            "is_enabled": true
+          }
+        ],
+        "description": "{{4.choices[].message.content}}",
+        "print_areas": [
+          {
+            "variant_ids": [
+              17391,
+              17392,
+              17393,
+              17394,
+              17395
+            ],
+            "placeholders": [
+              {
+                "images": [
+                  {
+                    "x": "0.5",
+                    "y": "0.5",
+                    "id": "{{10.id}}",
+                    "angle": "0",
+                    "scale": "1.0"
+                  }
+                ],
+                "position": "front"
+              }
+            ]
+          }
+        ],
+        "blueprint_id": 5,
+        "print_details": {
+          "print_on_side": "regular"
+        },
+        "print_provider_id": 29
+      },
+      "metadata": {
+        "designer": {
+          "x": 2100,
+          "y": 0
+        }
+      }
+    },
+    {
+      "id": 7,
+      "module": "printify:publishAProduct",
+      "version": 1,
+      "parameters": {
+        "__IMTCONN__": "REPLACE_WITH_YOUR_PRINTIFY_CONNECTION_ID"
+      },
+      "mapper": {
+        "tags": true,
+        "title": true,
+        "images": true,
+        "shop_id": "REPLACE_WITH_YOUR_PRINTIFY_SHOP_ID",
+        "variants": true,
+        "product_id": "{{6.id}}",
+        "description": true
+      },
+      "metadata": {
+        "designer": {
+          "x": 2400,
+          "y": 0
+        }
+      }
+    },
+    {
+      "id": 11,
+      "module": "airtable:createRecord",
+      "version": 5,
+      "parameters": {
+        "__IMTCONN__": "REPLACE_WITH_YOUR_AIRTABLE_CONNECTION_ID"
+      },
+      "mapper": {
+        "base": "REPLACE_WITH_YOUR_AIRTABLE_BASE_ID",
+        "table": "Products",
+        "fields": {
+          "Product Name": "{{3.choices[].message.content}}",
+          "Description": "{{4.choices[].message.content}}",
+          "Product Type": "T-Shirt",
+          "Printify Product ID": "{{6.id}}",
+          "Collections": ["Your Words Matter"],
+          "Main Image": "{{2.json.image_url}}",
+          "Status": "Available",
+          "Creation Date": "{{$formatDate($now; 'YYYY-MM-DD HH:mm:ss')}}"
+        }
+      },
+      "metadata": {
+        "designer": {
+          "x": 2700,
+          "y": 0
+        }
+      }
+    },
+    {
+      "id": 12,
+      "module": "tools:Router",
+      "version": 1,
+      "parameters": {},
+      "mapper": {
+        "routes": [
+          {
+            "fallback": false,
+            "condition": "{{$json.image_url == undefined}}",
+            "label": "Fal.ai Error",
+            "immediate": true,
+            "target": 13
+          },
+          {
+            "fallback": false,
+            "condition": "{{6.id == undefined}}",
+            "label": "Printify Error",
+            "immediate": true,
+            "target": 13
+          }
+        ]
+      },
+      "metadata": {
+        "designer": {
+          "x": 1200,
+          "y": 200
+        }
+      }
+    },
+    {
+      "id": 13,
+      "module": "gmail:sendEmail",
+      "version": 4,
+      "parameters": {
+        "__IMTCONN__": "REPLACE_WITH_YOUR_GMAIL_CONNECTION_ID"
+      },
+      "mapper": {
+        "to": [
+          {
+            "email": "REPLACE_WITH_YOUR_EMAIL"
+          }
+        ],
+        "subject": "Different Not Less Automation Error",
+        "body": "There was an error in the AAC design automation workflow:\n\nStep: {{$lastErrorModuleName}}\nError: {{$lastError}}\n\nPlease check the Make.com scenario for details.",
+        "cc": [],
+        "bcc": [],
+        "attachments": []
+      },
+      "metadata": {
+        "designer": {
+          "x": 1500,
+          "y": 200
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "instant": false,
+    "version": 1,
+    "scenario": {
+      "roundtrips": 1,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "autoCommitTriggerLast": true,
+      "sequential": false,
+      "confidential": false,
+      "dataloss": false,
+      "dlq": false,
+      "freshVariables": false
+    },
+    "designer": {
+      "orphans": []
+    },
+    "zone": "us1.make.com",
+    "notes": [
+      {
+        "content": "This workflow automates the creation of AAC and autism acceptance apparel designs using fal.ai for image generation and Printify for product creation. Each product is automatically inventoried in Airtable.",
+        "module": null,
+        "x": 0,
+        "y": -100
+      },
+      {
+        "content": "Replace all REPLACE_WITH_YOUR_* placeholders with your actual connection IDs before importing.",
+        "module": null,
+        "x": 0,
+        "y": -50
+      }
+    ]
+  }
+}

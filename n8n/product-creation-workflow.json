@@ -1,0 +1,405 @@
+{
+  "name": "Different Not Less - Product Creation Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "product-creation",
+        "options": {
+          "responseMode": "responseNode"
+        },
+        "authentication": "headerAuth",
+        "httpMethod": "POST"
+      },
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ],
+      "webhookId": "product-creation"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get input data\nconst inputData = $input.all()[0].json;\n\n// Define validation function\nfunction validateRequest(data) {\n  const errors = [];\n  \n  // Check required fields\n  if (!data.prompt) errors.push('Missing required field: prompt');\n  if (!data.productType) errors.push('Missing required field: productType');\n  if (!data.title) errors.push('Missing required field: title');\n  \n  // Validate product type\n  const validProductTypes = ['t-shirt', 'hoodie', 'sweatshirt', 'long-sleeve', 'tank-top'];\n  if (data.productType && !validProductTypes.includes(data.productType.toLowerCase())) {\n    errors.push(`Invalid product type: ${data.productType}. Must be one of: ${validProductTypes.join(', ')}`);\n  }\n  \n  // Return validation result\n  if (errors.length > 0) {\n    return {\n      isValid: false,\n      errors,\n      errorMessage: errors.join('. ')\n    };\n  }\n  \n  return { isValid: true };\n}\n\n// Function to enhance prompt for better image generation\nfunction enhancePrompt(prompt) {\n  return `${prompt}, high-quality t-shirt design, suitable for apparel printing, transparent background, AAC-friendly, clean professional design for Different Not Less Apparel, inclusive communication themed, flat vector style`;\n}\n\n// Function to get Printify blueprint ID based on product type\nfunction getBlueprintId(productType) {\n  const blueprintMap = {\n    't-shirt': 5,\n    'hoodie': 9,\n    'sweatshirt': 14,\n    'long-sleeve': 7,\n    'tank-top': 13\n  };\n  \n  return blueprintMap[productType.toLowerCase()] || 5; // Default to t-shirt if not found\n}\n\n// Validate the request\nconst validationResult = validateRequest(inputData);\n\nif (!validationResult.isValid) {\n  // Return error response\n  return {\n    error: true,\n    errorMessage: validationResult.errorMessage,\n    errorDetails: validationResult.errors,\n    statusCode: 400\n  };\n}\n\n// Process and enhance the data\nconst enhancedData = {\n  ...inputData,\n  enhancedPrompt: enhancePrompt(inputData.prompt),\n  blueprintId: getBlueprintId(inputData.productType),\n  description: inputData.description || `${inputData.title} - Different Not Less Apparel`,\n  collections: inputData.collections || [],\n  tags: inputData.tags || ['Different Not Less', 'AAC', 'autism acceptance'],\n  variants: inputData.variants || [\n    { color: 'white', sizes: ['S', 'M', 'L', 'XL', '2XL'] }\n  ]\n};\n\nreturn enhancedData;"
+      },
+      "name": "Validate Request",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        450,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$node[\"Validate Request\"].json[\"error\"]}}",
+              "operation": "exists"
+            }
+          ]
+        }
+      },
+      "name": "Route Request",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        650,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{$node[\"Validate Request\"].json}}",
+        "options": {
+          "responseCode": "={{$node[\"Validate Request\"].json[\"statusCode\"] || 400}}"
+        }
+      },
+      "name": "Error Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        850,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://api.fal.ai/v1/image-generation",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "allowUnauthorizedCerts": true,
+          "bodyContentType": "json",
+          "response": {
+            "fullResponse": true
+          }
+        },
+        "jsonParameters": true,
+        "requestMethod": "POST",
+        "bodyParametersJson": "{\n  \"prompt\": \"{{$node[\"Validate Request\"].json[\"enhancedPrompt\"]}}\",\n  \"negative_prompt\": \"low quality, distorted text, blurry, pixelated\",\n  \"width\": 4500,\n  \"height\": 5400,\n  \"model\": \"stable-diffusion-xl-1024-v1-0\",\n  \"output_format\": \"png\",\n  \"transparent\": true\n}"
+      },
+      "name": "Generate Image",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        850,
+        400
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "1",
+          "name": "fal.ai API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get input data\nconst imageResponse = $input.all()[0].json;\nconst productData = $input.all()[0].json.requestOptions.bodyParametersJson;\nconst validatedData = $node[\"Validate Request\"].json;\n\n// Check if image generation was successful\nif (!imageResponse.body || !imageResponse.body.images || !imageResponse.body.images[0]) {\n  return {\n    success: false,\n    message: \"Image generation failed\",\n    error: imageResponse.body?.error || \"No image data returned\",\n    statusCode: 500\n  };\n}\n\n// Extract image URL\nconst imageUrl = imageResponse.body.images[0].url;\n\n// Function to calculate price based on size\nfunction calculatePrice(size) {\n  const basePrice = 24.99;\n  \n  // Add premium for larger sizes\n  if (size === 'XL') return basePrice + 2;\n  if (size === '2XL') return basePrice + 4;\n  if (size === '3XL') return basePrice + 6;\n  \n  return basePrice;\n}\n\n// Function to generate Printify variants\nfunction generatePrintifyVariants(variants) {\n  const result = [];\n  \n  // Map of size to Printify size ID (these are example IDs, actual IDs depend on the blueprint)\n  const sizeMap = {\n    'S': 1,\n    'M': 2,\n    'L': 3,\n    'XL': 4,\n    '2XL': 5,\n    '3XL': 6\n  };\n  \n  // Map of color to Printify color ID (these are example IDs, actual IDs depend on the blueprint)\n  const colorMap = {\n    'white': 1,\n    'black': 2,\n    'navy': 3,\n    'light blue': 4,\n    'heather gray': 5\n  };\n  \n  // Generate all combinations of color and size\n  variants.forEach(variant => {\n    const colorId = colorMap[variant.color.toLowerCase()] || 1;\n    \n    variant.sizes.forEach(size => {\n      const sizeId = sizeMap[size] || 2;\n      \n      result.push({\n        variant_id: `${colorId}_${sizeId}`,\n        price: calculatePrice(size),\n        is_enabled: true\n      });\n    });\n  });\n  \n  return result;\n}\n\n// Prepare data for Printify API\nconst printifyData = {\n  title: validatedData.title,\n  description: validatedData.description,\n  blueprint_id: validatedData.blueprintId,\n  print_provider_id: 1, // Example provider ID, adjust as needed\n  variants: generatePrintifyVariants(validatedData.variants),\n  print_areas: [\n    {\n      variant_ids: [\"1_1\", \"1_2\", \"1_3\", \"1_4\", \"1_5\", \"2_1\", \"2_2\", \"2_3\", \"2_4\", \"2_5\"],\n      position: \"front\",\n      images: [\n        {\n          url: imageUrl,\n          x: 0.5,\n          y: 0.5,\n          scale: 0.8,\n          angle: 0\n        }\n      ]\n    }\n  ],\n  tags: validatedData.tags,\n  options: {\n    is_locked: false\n  }\n};\n\nreturn {\n  ...validatedData,\n  imageUrl,\n  printifyData,\n  success: true\n};"
+      },
+      "name": "Process Image",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        1050,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://api.printify.com/v1/shops/{{$node[\"Validate Request\"].json[\"printifyShopId\"] || \"YOUR_SHOP_ID\"}}/products.json",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "allowUnauthorizedCerts": true,
+          "bodyContentType": "json",
+          "response": {
+            "fullResponse": true
+          }
+        },
+        "jsonParameters": true,
+        "requestMethod": "POST",
+        "bodyParametersJson": "={{$node[\"Process Image\"].json[\"printifyData\"]}}"
+      },
+      "name": "Create Printify Product",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        1250,
+        400
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "2",
+          "name": "Printify API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get input data\nconst printifyResponse = $input.all()[0].json;\nconst previousData = $node[\"Process Image\"].json;\n\n// Check if Printify product creation was successful\nif (!printifyResponse.body || !printifyResponse.body.id) {\n  return {\n    success: false,\n    message: \"Printify product creation failed\",\n    error: printifyResponse.body?.error || \"No product ID returned\",\n    statusCode: 500\n  };\n}\n\n// Extract Printify product ID\nconst printifyProductId = printifyResponse.body.id;\nconst printifyEditUrl = `https://printify.com/app/editor/${printifyProductId}`;\n\n// Prepare data for publishing to Shopify\nconst publishData = {\n  title: previousData.title,\n  description: previousData.description,\n  tags: previousData.tags.join(\", \"),\n  options: {\n    shopify: {\n      published: true\n    }\n  }\n};\n\nreturn {\n  ...previousData,\n  printifyProductId,\n  printifyEditUrl,\n  publishData\n};"
+      },
+      "name": "Process Printify Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        1450,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://api.printify.com/v1/shops/{{$node[\"Validate Request\"].json[\"printifyShopId\"] || \"YOUR_SHOP_ID\"}}/products/{{$node[\"Process Printify Response\"].json[\"printifyProductId\"]}}/publish.json",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "allowUnauthorizedCerts": true,
+          "bodyContentType": "json",
+          "response": {
+            "fullResponse": true
+          }
+        },
+        "jsonParameters": true,
+        "requestMethod": "POST",
+        "bodyParametersJson": "={{$node[\"Process Printify Response\"].json[\"publishData\"]}}"
+      },
+      "name": "Publish to Shopify",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        1650,
+        400
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "2",
+          "name": "Printify API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get input data\nconst publishResponse = $input.all()[0].json;\nconst previousData = $node[\"Process Printify Response\"].json;\n\n// Check if publishing to Shopify was successful\nif (!publishResponse.body || !publishResponse.body.external) {\n  return {\n    success: false,\n    message: \"Publishing to Shopify failed\",\n    error: publishResponse.body?.error || \"No Shopify data returned\",\n    statusCode: 500\n  };\n}\n\n// Extract Shopify product ID and handle\nconst shopifyProductId = publishResponse.body.external.id;\nconst shopifyHandle = publishResponse.body.external.handle;\nconst shopifyUrl = `https://differentnotless.com/products/${shopifyHandle}`;\n\n// Prepare data for Airtable update\nconst airtableData = {\n  records: [\n    {\n      fields: {\n        \"Title\": previousData.title,\n        \"Description\": previousData.description,\n        \"Product Type\": previousData.productType,\n        \"Printify Product ID\": previousData.printifyProductId,\n        \"Shopify Product ID\": shopifyProductId,\n        \"Design Image URL\": previousData.imageUrl,\n        \"Collections\": previousData.collections,\n        \"Tags\": previousData.tags,\n        \"Status\": \"Active\",\n        \"Printify Edit URL\": previousData.printifyEditUrl,\n        \"Shopify URL\": shopifyUrl\n      }\n    }\n  ]\n};\n\nreturn {\n  ...previousData,\n  shopifyProductId,\n  shopifyHandle,\n  shopifyUrl,\n  airtableData\n};"
+      },
+      "name": "Process Shopify Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        1850,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "url": "=https://api.airtable.com/v0/{{$node[\"Validate Request\"].json[\"airtableBaseId\"] || \"YOUR_BASE_ID\"}}/Products",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {
+          "allowUnauthorizedCerts": true,
+          "bodyContentType": "json",
+          "response": {
+            "fullResponse": true
+          }
+        },
+        "jsonParameters": true,
+        "requestMethod": "POST",
+        "bodyParametersJson": "={{$node[\"Process Shopify Response\"].json[\"airtableData\"]}}"
+      },
+      "name": "Update Airtable",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        2050,
+        400
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "3",
+          "name": "Airtable API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get input data\nconst airtableResponse = $input.all()[0].json;\nconst previousData = $node[\"Process Shopify Response\"].json;\n\n// Check if Airtable update was successful\nif (!airtableResponse.body || !airtableResponse.body.records || airtableResponse.body.records.length === 0) {\n  return {\n    success: false,\n    message: \"Airtable update failed\",\n    error: airtableResponse.body?.error || \"No record created\",\n    statusCode: 500\n  };\n}\n\n// Extract Airtable record ID\nconst airtableRecordId = airtableResponse.body.records[0].id;\n\n// Format the final response\nconst finalResponse = {\n  success: true,\n  message: \"Product successfully created and synced\",\n  product: {\n    title: previousData.title,\n    printifyProductId: previousData.printifyProductId,\n    printifyEditUrl: previousData.printifyEditUrl,\n    shopifyProductId: previousData.shopifyProductId,\n    shopifyUrl: previousData.shopifyUrl,\n    designImageUrl: previousData.imageUrl,\n    airtableRecordId\n  }\n};\n\nreturn finalResponse;"
+      },
+      "name": "Format Response",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [
+        2250,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{$node[\"Format Response\"].json}}",
+        "options": {}
+      },
+      "name": "Success Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        2450,
+        400
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Validate Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Request": {
+      "main": [
+        [
+          {
+            "node": "Route Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route Request": {
+      "main": [
+        [
+          {
+            "node": "Error Response",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Generate Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Image": {
+      "main": [
+        [
+          {
+            "node": "Process Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Image": {
+      "main": [
+        [
+          {
+            "node": "Create Printify Product",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Printify Product": {
+      "main": [
+        [
+          {
+            "node": "Process Printify Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Printify Response": {
+      "main": [
+        [
+          {
+            "node": "Publish to Shopify",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Publish to Shopify": {
+      "main": [
+        [
+          {
+            "node": "Process Shopify Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Shopify Response": {
+      "main": [
+        [
+          {
+            "node": "Update Airtable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Airtable": {
+      "main": [
+        [
+          {
+            "node": "Format Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Response": {
+      "main": [
+        [
+          {
+            "node": "Success Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "name": "Different Not Less",
+      "color": "#61d36f"
+    },
+    {
+      "name": "Product Creation",
+      "color": "#ff6d6a"
+    }
+  ],
+  "triggerCount": 1,
+  "versionId": "1",
+  "meta": {
+    "instanceId": "YOUR_INSTANCE_ID"
+  }
+}

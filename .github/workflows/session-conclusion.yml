@@ -1,0 +1,138 @@
+name: Session Conclusion
+
+on:
+  workflow_dispatch:
+    inputs:
+      session_summary:
+        description: 'Brief summary of the session'
+        required: true
+        type: string
+      completed_tasks:
+        description: 'IDs of completed tasks (comma-separated)'
+        required: true
+        type: string
+      next_tasks:
+        description: 'IDs of next priority tasks (comma-separated)'
+        required: true
+        type: string
+      session_date:
+        description: 'Session date (YYYY-MM-DD)'
+        required: true
+        type: string
+      session_duration:
+        description: 'Session duration (HH:MM)'
+        required: true
+        type: string
+      focus_area:
+        description: 'Brief description of session focus'
+        required: true
+        type: string
+
+jobs:
+  update-documentation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          
+      - name: Update task status in GitHub Projects
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const completedTaskIds = '${{ github.event.inputs.completed_tasks }}'.split(',').map(id => id.trim());
+            const nextTaskIds = '${{ github.event.inputs.next_tasks }}'.split(',').map(id => id.trim());
+            
+            // Update completed tasks
+            for (const taskId of completedTaskIds) {
+              if (!taskId) continue;
+              
+              try {
+                // Mark task as completed in GitHub Projects
+                // This is a simplified example - actual implementation would use the GitHub Projects API
+                console.log(`Marking task ${taskId} as completed`);
+                
+                // In a real implementation, you would use the GraphQL API to update the task status
+                // Example:
+                // await github.graphql(`
+                //   mutation {
+                //     updateProjectV2ItemFieldValue(input: {
+                //       projectId: "PROJECT_ID",
+                //       itemId: "${taskId}",
+                //       fieldId: "STATUS_FIELD_ID",
+                //       value: { 
+                //         singleSelectOptionId: "COMPLETED_OPTION_ID"
+                //       }
+                //     }) {
+                //       projectV2Item {
+                //         id
+                //       }
+                //     }
+                //   }
+                // `);
+              } catch (error) {
+                console.error(`Error updating task ${taskId}:`, error);
+              }
+            }
+            
+            // Update next tasks priority
+            for (const taskId of nextTaskIds) {
+              if (!taskId) continue;
+              
+              try {
+                // Update task priority in GitHub Projects
+                console.log(`Updating priority for task ${taskId}`);
+                
+                // In a real implementation, you would use the GraphQL API to update the task priority
+              } catch (error) {
+                console.error(`Error updating priority for task ${taskId}:`, error);
+              }
+            }
+            
+      - name: Generate session summary
+        run: |
+          # Create session summary file with timestamp
+          SESSION_DATE="${{ github.event.inputs.session_date }}"
+          SESSION_FILENAME="memory-bank/sessions/session-summary-${SESSION_DATE}.md"
+          
+          # Copy template and replace placeholders
+          cp memory-bank/sessions/session-summary-template.md "$SESSION_FILENAME"
+          
+          # Replace placeholders with actual values
+          sed -i "s/\[DATE\]/${SESSION_DATE}/g" "$SESSION_FILENAME"
+          sed -i "s/\[YYYY-MM-DD\]/${SESSION_DATE}/g" "$SESSION_FILENAME"
+          sed -i "s/\[HH:MM\]/${{ github.event.inputs.session_duration }}/g" "$SESSION_FILENAME"
+          sed -i "s/\[Brief description of session focus\]/${{ github.event.inputs.focus_area }}/g" "$SESSION_FILENAME"
+          
+          # Add session summary to the file
+          echo "${{ github.event.inputs.session_summary }}" >> "$SESSION_FILENAME"
+          
+          echo "Generated session summary at $SESSION_FILENAME"
+          
+      - name: Update activeContext.md with completed tasks
+        run: |
+          # This is a simplified example - in a real implementation, you would parse the activeContext.md file
+          # and update the task status for each completed task
+          
+          echo "Updating activeContext.md with completed tasks"
+          COMPLETED_TASKS="${{ github.event.inputs.completed_tasks }}"
+          
+          # In a real implementation, you would use a script to parse and update the file
+          # For example:
+          # python scripts/update_active_context.py --completed-tasks "$COMPLETED_TASKS"
+          
+      - name: Commit documentation updates
+        run: |
+          git config --global user.name 'GitHub Actions'
+          git config --global user.email 'actions@github.com'
+          
+          SESSION_DATE="${{ github.event.inputs.session_date }}"
+          
+          git add memory-bank/activeContext.md memory-bank/progress.md memory-bank/sessions/
+          git commit -m "Update documentation after session on ${SESSION_DATE}"
+          git push
