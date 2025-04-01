@@ -1,0 +1,329 @@
+{
+  "name": "Image Generation Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "baseId": "applwPKN2KZFZ9JfW",
+        "table": "Website Images",
+        "options": {
+          "filterByFormula": "{Status} = 'Draft'"
+        }
+      },
+      "name": "Airtable Trigger",
+      "type": "n8n-nodes-base.airtableTrigger",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ],
+      "webhookId": "airtable-image-generation-trigger"
+    },
+    {
+      "parameters": {
+        "functionCode": "// Extract dimensions from the image dimensions field\nconst dimensionsStr = $input.item.json['Image Dimensions'] || '1200x400';\nconst [width, height] = dimensionsStr.split('x').map(d => parseInt(d, 10));\n\n// Extract prompt\nconst prompt = $input.item.json['Generation Prompt'];\n\n// Extract collection associations\nconst collections = $input.item.json['Collection Association'] || [];\n\n// Extract image type\nconst imageType = $input.item.json['Image Type'] || 'Hero Banner';\n\n// Create generation parameters\nconst generationParams = {\n  model: 'stable-diffusion-xl-v1-0',\n  prompt: prompt,\n  width: width || 1200,\n  height: height || 400,\n  steps: 30,\n  cfg_scale: 7.5,\n  seed: Math.floor(Math.random() * 1000000),\n  collections: collections,\n  imageType: imageType,\n  recordId: $input.item.json.id\n};\n\nreturn {json: generationParams};"
+      },
+      "name": "Prepare Generation Parameters",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        450,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://api.fal.ai/v1/generation/stable-diffusion-xl-v1-0",
+        "options": {
+          "method": "POST",
+          "headers": {
+            "Authorization": "=Bearer {{$credentials.falAiApi.apiKey}}",
+            "Content-Type": "application/json"
+          },
+          "body": "{\n  \"prompt\": \"{{$node[\"Prepare Generation Parameters\"].json[\"prompt\"]}}\",\n  \"width\": {{$node[\"Prepare Generation Parameters\"].json[\"width\"]}},\n  \"height\": {{$node[\"Prepare Generation Parameters\"].json[\"height\"]}},\n  \"steps\": {{$node[\"Prepare Generation Parameters\"].json[\"steps\"]}},\n  \"cfg_scale\": {{$node[\"Prepare Generation Parameters\"].json[\"cfg_scale\"]}},\n  \"seed\": {{$node[\"Prepare Generation Parameters\"].json[\"seed\"]}}\n}"
+        }
+      },
+      "name": "Generate Image with fal.ai",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [
+        650,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Extract the image URL from the fal.ai response\nconst imageUrl = $input.item.json.images[0].url;\n\n// Get the start time to calculate processing time\nconst startTime = new Date($input.item.json.created_at).getTime();\nconst endTime = new Date().getTime();\nconst processingTime = (endTime - startTime) / 1000; // in seconds\n\n// Prepare the data for updating Airtable\nreturn {\n  json: {\n    recordId: $node[\"Prepare Generation Parameters\"].json.recordId,\n    imageUrl: imageUrl,\n    processingTime: processingTime,\n    success: true,\n    generationParams: JSON.stringify({\n      model: $node[\"Prepare Generation Parameters\"].json.model,\n      steps: $node[\"Prepare Generation Parameters\"].json.steps,\n      cfg_scale: $node[\"Prepare Generation Parameters\"].json.cfg_scale,\n      seed: $node[\"Prepare Generation Parameters\"].json.seed,\n      width: $node[\"Prepare Generation Parameters\"].json.width,\n      height: $node[\"Prepare Generation Parameters\"].json.height\n    })\n  }\n};"
+      },
+      "name": "Process Image Result",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        850,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "baseId": "applwPKN2KZFZ9JfW",
+        "table": "Website Images",
+        "operation": "update",
+        "id": "={{$node[\"Process Image Result\"].json[\"recordId\"]}}",
+        "options": {
+          "fields": {
+            "Image File": [
+              {
+                "url": "={{$node[\"Process Image Result\"].json[\"imageUrl\"]}}"
+              }
+            ],
+            "Status": "In Review"
+          }
+        }
+      },
+      "name": "Update Airtable Image Record",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 1,
+      "position": [
+        1050,
+        300
+      ],
+      "credentials": {
+        "airtableApi": {
+          "id": "airtable-api-credentials",
+          "name": "Airtable API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "baseId": "applwPKN2KZFZ9JfW",
+        "table": "Image Generation Logs",
+        "options": {
+          "fields": {
+            "Related Image": [
+              "={{$node[\"Process Image Result\"].json[\"recordId\"]}}"
+            ],
+            "Generation Tool": "fal.ai",
+            "Prompt Used": "={{$node[\"Prepare Generation Parameters\"].json[\"prompt\"]}}",
+            "Generation Parameters": "={{$node[\"Process Image Result\"].json[\"generationParams\"]}}",
+            "Generation Date": "={{$now}}",
+            "Success Status": true,
+            "Result URL": "={{$node[\"Process Image Result\"].json[\"imageUrl\"]}}",
+            "Processing Time": "={{$node[\"Process Image Result\"].json[\"processingTime\"]}}"
+          }
+        }
+      },
+      "name": "Create Generation Log",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 1,
+      "position": [
+        1050,
+        450
+      ],
+      "credentials": {
+        "airtableApi": {
+          "id": "airtable-api-credentials",
+          "name": "Airtable API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$node[\"Process Image Result\"].json[\"success\"]}}",
+              "value2": "true"
+            }
+          ]
+        }
+      },
+      "name": "IF (Success)",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [
+        1050,
+        150
+      ]
+    },
+    {
+      "parameters": {
+        "baseId": "applwPKN2KZFZ9JfW",
+        "table": "Image Generation Logs",
+        "options": {
+          "fields": {
+            "Related Image": [
+              "={{$node[\"Prepare Generation Parameters\"].json[\"recordId\"]}}"
+            ],
+            "Generation Tool": "fal.ai",
+            "Prompt Used": "={{$node[\"Prepare Generation Parameters\"].json[\"prompt\"]}}",
+            "Generation Parameters": "={{JSON.stringify($node[\"Prepare Generation Parameters\"].json)}}",
+            "Generation Date": "={{$now}}",
+            "Success Status": false,
+            "Error Message": "={{$node[\"Generate Image with fal.ai\"].json[\"error\"] || 'Unknown error occurred during image generation'}}"
+          }
+        }
+      },
+      "name": "Create Error Log",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 1,
+      "position": [
+        1250,
+        150
+      ],
+      "credentials": {
+        "airtableApi": {
+          "id": "airtable-api-credentials",
+          "name": "Airtable API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "to": "team@differentnotless.com",
+        "subject": "Image Generation Complete: {{$node[\"Prepare Generation Parameters\"].json[\"imageType\"]}} for {{$node[\"Prepare Generation Parameters\"].json[\"collections\"][0]}}",
+        "text": "=## Image Generation Complete\n\nA new image has been generated and is ready for review.\n\n**Image Type:** {{$node[\"Prepare Generation Parameters\"].json[\"imageType\"]}}\n**Collection:** {{$node[\"Prepare Generation Parameters\"].json[\"collections\"].join(\", \")}}\n**Dimensions:** {{$node[\"Prepare Generation Parameters\"].json[\"width\"]}}x{{$node[\"Prepare Generation Parameters\"].json[\"height\"]}}\n\n### Preview\n\n![Generated Image]({{$node[\"Process Image Result\"].json[\"imageUrl\"]}})\n\n### Prompt Used\n\n```\n{{$node[\"Prepare Generation Parameters\"].json[\"prompt\"]}}\n```\n\n### Next Steps\n\nPlease review the image in Airtable and update its status to either:\n- **Approved** - if the image is ready to use\n- **Draft** - if you want to regenerate with a different prompt\n\n[View in Airtable](https://airtable.com/{{$node[\"Prepare Generation Parameters\"].json[\"baseId\"]}}/{{$node[\"Prepare Generation Parameters\"].json[\"tableId\"]}}/{{$node[\"Prepare Generation Parameters\"].json[\"recordId\"]}})",
+        "options": {}
+      },
+      "name": "Send Success Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [
+        1250,
+        300
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "smtp-credentials",
+          "name": "SMTP"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "to": "team@differentnotless.com",
+        "subject": "Image Generation Failed: {{$node[\"Prepare Generation Parameters\"].json[\"imageType\"]}} for {{$node[\"Prepare Generation Parameters\"].json[\"collections\"][0]}}",
+        "text": "=## Image Generation Failed\n\nThere was an error generating the requested image.\n\n**Image Type:** {{$node[\"Prepare Generation Parameters\"].json[\"imageType\"]}}\n**Collection:** {{$node[\"Prepare Generation Parameters\"].json[\"collections\"].join(\", \")}}\n**Dimensions:** {{$node[\"Prepare Generation Parameters\"].json[\"width\"]}}x{{$node[\"Prepare Generation Parameters\"].json[\"height\"]}}\n\n### Error Message\n\n```\n{{$node[\"Generate Image with fal.ai\"].json[\"error\"] || 'Unknown error occurred during image generation'}}\n```\n\n### Prompt Used\n\n```\n{{$node[\"Prepare Generation Parameters\"].json[\"prompt\"]}}\n```\n\n### Next Steps\n\nPlease check the prompt and try again, or contact the development team for assistance.\n\n[View in Airtable](https://airtable.com/{{$node[\"Prepare Generation Parameters\"].json[\"baseId\"]}}/{{$node[\"Prepare Generation Parameters\"].json[\"tableId\"]}}/{{$node[\"Prepare Generation Parameters\"].json[\"recordId\"]}})",
+        "options": {}
+      },
+      "name": "Send Error Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [
+        1450,
+        150
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "smtp-credentials",
+          "name": "SMTP"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Airtable Trigger": {
+      "main": [
+        [
+          {
+            "node": "Prepare Generation Parameters",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Generation Parameters": {
+      "main": [
+        [
+          {
+            "node": "Generate Image with fal.ai",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Image with fal.ai": {
+      "main": [
+        [
+          {
+            "node": "Process Image Result",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "IF (Success)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Image Result": {
+      "main": [
+        [
+          {
+            "node": "Update Airtable Image Record",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Create Generation Log",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send Success Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF (Success)": {
+      "main": [
+        [
+          {
+            "node": "Process Image Result",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create Error Log",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Error Log": {
+      "main": [
+        [
+          {
+            "node": "Send Error Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": "error-handling-workflow"
+  },
+  "tags": [
+    "image",
+    "generation",
+    "airtable",
+    "fal.ai"
+  ],
+  "createdAt": "2025-03-31T12:00:00.000Z",
+  "updatedAt": "2025-03-31T12:00:00.000Z",
+  "id": "image-generation-workflow"
+}
