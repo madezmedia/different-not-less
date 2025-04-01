@@ -13,7 +13,8 @@
     "@sanity/image-url": "^1.0.2",
     "@shopify/shopify-api": "^8.1.1",
     "airtable": "^0.12.2",
-    "next": "14.1.0",
+    "dotenv": "^16.4.7",
+    "next": "^14.2.26",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "shopify-buy": "^2.21.1"
