@@ -1,0 +1,510 @@
+{
+  "name": "Different Not Less - AAC Designs with Fal.ai",
+  "flow": [
+    {
+      "id": 1,
+      "module": "airtable:TriggerWatchRecords",
+      "version": 3,
+      "parameters": {
+        "__IMTCONN__": 4085441,
+        "base": "applwPKN2KZFZ9JfW",
+        "useColumnId": false,
+        "table": "tblvIGksraXr9MHlJ",
+        "config": {
+          "triggerField": "Created",
+          "labelField": "Name"
+        },
+        "maxRecords": 1,
+        "view": "",
+        "formula": ""
+      },
+      "mapper": {},
+      "metadata": {
+        "designer": {
+          "x": 0,
+          "y": 0
+        },
+        "notes": "Triggers when a new design is added to Airtable"
+      }
+    },
+    {
+      "id": 2,
+      "module": "openai-gpt-3:CreateCompletion",
+      "version": 1,
+      "parameters": {
+        "__IMTCONN__": 1816168
+      },
+      "mapper": {
+        "model": "gpt-4o",
+        "top_p": "1",
+        "select": "chat",
+        "messages": [
+          {
+            "role": "system",
+            "content": "You are an AI specialized in generating creative prompts for fal.ai to produce inclusive and authentic AAC (Augmentative and Alternative Communication) and autism acceptance artwork for T-shirts. Your task is to generate diverse, professional, and respectful prompts that describe designs incorporating elements of AAC devices, communication boards, and neurodiversity symbols. Each prompt should include details about colors, symbols, messages, and specific elements that make the artwork suitable for a T-shirt print for SLPs, teachers, parents, and behavior analysts."
+          },
+          {
+            "role": "user",
+            "content": "Generate a detailed prompt for fal.ai to create a t-shirt design based on this concept: {{1.Name}}. Include elements from the following design brief: {{1.Designer Brief}}. Target audience: {{1.Target Audience}}. Include these design elements: {{1.Design Elements}}."
+          }
+        ],
+        "max_tokens": "500",
+        "temperature": ".8",
+        "response_format": "text"
+      },
+      "metadata": {
+        "designer": {
+          "x": 300,
+          "y": 0
+        },
+        "notes": "Generates a detailed design prompt based on Airtable fields"
+      }
+    },
+    {
+      "id": 3,
+      "module": "cohere:chat",
+      "version": 1,
+      "parameters": {
+        "__IMTCONN__": 2559495
+      },
+      "mapper": {
+        "p": "0.75",
+        "model": "command-r",
+        "message": "Summarize this AAC/autism acceptance design prompt in 150 words or less, preserving all key details and style instructions:\n {{2.choices[].message.content}}",
+        "temperature": "0.75",
+        "search_queries_only": false
+      },
+      "metadata": {
+        "designer": {
+          "x": 600,
+          "y": 0
+        },
+        "notes": "Creates a concise version of the prompt"
+      }
+    },
+    {
+      "id": 4,
+      "module": "fal-ai:makeApiCall",
+      "version": 1,
+      "parameters": {
+        "__IMTCONN__": 4085462
+      },
+      "mapper": {
+        "url": "workflows/madezmedia/t-shirt-design-maker",
+        "method": "POST",
+        "headers": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": "{\"prompt\":\"{{2.choices[].message.content}}\",\"transparent\":true,\"width\":4500,\"height\":5400}"
+      },
+      "metadata": {
+        "designer": {
+          "x": 900,
+          "y": 0
+        },
+        "notes": "Sends the prompt to fal.ai t-shirt design maker workflow"
+      }
+    },
+    {
+      "id": 5,
+      "module": "util:FunctionSleep",
+      "version": 1,
+      "parameters": {},
+      "mapper": {
+        "duration": "90"
+      },
+      "metadata": {
+        "designer": {
+          "x": 1200,
+          "y": 0
+        },
+        "notes": "Waits for fal.ai to generate the image"
+      }
+    },
+    {
+      "id": 6,
+      "module": "fal-ai:getData",
+      "version": 1,
+      "parameters": {
+        "__IMTCONN__": 4085462
+      },
+      "mapper": {
+        "request_id": "{{4.body.request_id}}"
+      },
+      "metadata": {
+        "designer": {
+          "x": 1500,
+          "y": 0
+        },
+        "notes": "Retrieves the generated image data"
+      }
+    },
+    {
+      "id": 7,
+      "module": "openai-gpt-3:CreateCompletion",
+      "version": 1,
+      "parameters": {
+        "__IMTCONN__": 1816168
+      },
+      "mapper": {
+        "model": "gpt-4",
+        "top_p": ".8",
+        "select": "chat",
+        "messages": [
+          {
+            "role": "system",
+            "content": "You are an AI specialized in creating product titles for a brand called 'Different Not Less' that makes apparel celebrating AAC (Augmentative and Alternative Communication) and autism acceptance. Your task is to create engaging, professional, and respectful product titles that would appeal to SLPs (Speech-Language Pathologists), special education teachers, parents of children with autism, and behavior analysts."
+          },
+          {
+            "role": "user",
+            "content": "Create a catchy product title for a AAC/autism acceptance design. The design concept is: {{1.Name}}. Target audience: {{1.Target Audience}}. The title should be engaging and reflective of the unique and artistic qualities of the design."
+          }
+        ],
+        "max_tokens": "50",
+        "temperature": "0.9",
+        "response_format": "text"
+      },
+      "metadata": {
+        "designer": {
+          "x": 1800,
+          "y": 0
+        },
+        "notes": "Creates a product title"
+      }
+    },
+    {
+      "id": 8,
+      "module": "openai-gpt-3:CreateCompletion",
+      "version": 1,
+      "parameters": {
+        "__IMTCONN__": 1816168
+      },
+      "mapper": {
+        "model": "gpt-4",
+        "top_p": "1",
+        "select": "chat",
+        "messages": [
+          {
+            "role": "system",
+            "content": "You are an AI specialized in creating product descriptions for a brand called 'Different Not Less' that makes apparel celebrating AAC (Augmentative and Alternative Communication) and autism acceptance."
+          },
+          {
+            "role": "user",
+            "content": "Create a product description for a Different Not Less t-shirt featuring: {{1.Name}}\nin 400 characters or less. Mention our sensory-friendly materials (100% ring-spun cotton, tagless design) and who would appreciate this design ({{1.Target Audience}}). Add 10 relevant hashtags that would appeal to our target markets (SLPs, teachers, parents, behavior analysts)."
+          }
+        ],
+        "max_tokens": "150",
+        "temperature": "0.8",
+        "response_format": "text"
+      },
+      "metadata": {
+        "designer": {
+          "x": 2100,
+          "y": 0
+        },
+        "notes": "Creates a product description"
+      }
+    },
+    {
+      "id": 9,
+      "module": "printify:uploadAnImage",
+      "version": 1,
+      "parameters": {
+        "__IMTCONN__": 4088179
+      },
+      "mapper": {
+        "url": "{{6.json.image_url}}",
+        "type": "url",
+        "fileName": "{{7.choices[].message.content}}"
+      },
+      "metadata": {
+        "designer": {
+          "x": 2400,
+          "y": 0
+        },
+        "notes": "Uploads the generated image to Printify"
+      }
+    },
+    {
+      "id": 10,
+      "module": "printify:createAProduct",
+      "version": 1,
+      "parameters": {
+        "__IMTCONN__": 4088179
+      },
+      "mapper": {
+        "tags": [
+          "AAC",
+          "Autism Acceptance",
+          "Speech Therapy",
+          "Special Education"
+        ],
+        "title": "{{7.choices[].message.content}}",
+        "shopId": 21245816,
+        "variants": [
+          {
+            "id": 17391,
+            "price": "2499",
+            "is_enabled": true
+          },
+          {
+            "id": 17392,
+            "price": "2499",
+            "is_enabled": true
+          },
+          {
+            "id": 17393,
+            "price": "2499",
+            "is_enabled": true
+          },
+          {
+            "id": 17394,
+            "price": "2499",
+            "is_enabled": true
+          },
+          {
+            "id": 17395,
+            "price": "2499",
+            "is_enabled": true
+          }
+        ],
+        "description": "{{8.choices[].message.content}}",
+        "print_areas": [
+          {
+            "variant_ids": [
+              17391,
+              17392,
+              17393,
+              17394,
+              17395
+            ],
+            "placeholders": [
+              {
+                "images": [
+                  {
+                    "x": "0.5",
+                    "y": "0.5",
+                    "id": "{{9.id}}",
+                    "angle": "0",
+                    "scale": "1.0"
+                  }
+                ],
+                "position": "front"
+              }
+            ]
+          }
+        ],
+        "blueprint_id": 5,
+        "print_details": {
+          "print_on_side": "regular"
+        },
+        "print_provider_id": 29
+      },
+      "metadata": {
+        "designer": {
+          "x": 2700,
+          "y": 0
+        },
+        "notes": "Creates a product in Printify"
+      }
+    },
+    {
+      "id": 11,
+      "module": "printify:publishAProduct",
+      "version": 1,
+      "parameters": {
+        "__IMTCONN__": 4088179
+      },
+      "mapper": {
+        "tags": true,
+        "title": true,
+        "images": true,
+        "shop_id": "21245816",
+        "variants": true,
+        "product_id": "{{10.id}}",
+        "description": true
+      },
+      "metadata": {
+        "designer": {
+          "x": 3000,
+          "y": 0
+        },
+        "notes": "Publishes the product to Printify shop"
+      }
+    },
+    {
+      "id": 12,
+      "module": "airtable:createRecord",
+      "version": 5,
+      "parameters": {
+        "__IMTCONN__": 4085441
+      },
+      "mapper": {
+        "base": "applwPKN2KZFZ9JfW",
+        "table": "Products",
+        "fields": {
+          "Product Name": "{{7.choices[].message.content}}",
+          "Description": "{{8.choices[].message.content}}",
+          "Product Type": "T-Shirt",
+          "Printify Product ID": "{{10.id}}",
+          "Collections": ["Your Words Matter"],
+          "Main Image": "{{6.json.image_url}}",
+          "Status": "Available",
+          "Creation Date": "{{$formatDate($now; 'YYYY-MM-DD HH:mm:ss')}}",
+          "Design": ["{{1.id}}"]
+        }
+      },
+      "metadata": {
+        "designer": {
+          "x": 3300,
+          "y": 0
+        },
+        "notes": "Creates a product record in Airtable and links it to the original design"
+      }
+    },
+    {
+      "id": 13,
+      "module": "airtable:updateRecord",
+      "version": 6,
+      "parameters": {
+        "__IMTCONN__": 4085441
+      },
+      "mapper": {
+        "base": "applwPKN2KZFZ9JfW",
+        "table": "tblvIGksraXr9MHlJ",
+        "record": "{{1.id}}",
+        "fields": {
+          "Status": "Published",
+          "Image URL": "{{6.json.image_url}}",
+          "Products": ["{{12.id}}"],
+          "Last Modified": "{{$formatDate($now; 'YYYY-MM-DD HH:mm:ss')}}"
+        }
+      },
+      "metadata": {
+        "designer": {
+          "x": 3600,
+          "y": 0
+        },
+        "notes": "Updates the original design record with product info and status"
+      }
+    },
+    {
+      "id": 14,
+      "module": "tools:Router",
+      "version": 1,
+      "parameters": {},
+      "mapper": {
+        "routes": [
+          {
+            "fallback": false,
+            "condition": "{{6.json.image_url == undefined}}",
+            "label": "Fal.ai Error",
+            "immediate": true,
+            "target": 15
+          },
+          {
+            "fallback": false,
+            "condition": "{{10.id == undefined}}",
+            "label": "Printify Error",
+            "immediate": true,
+            "target": 15
+          }
+        ]
+      },
+      "metadata": {
+        "designer": {
+          "x": 1800,
+          "y": 300
+        },
+        "notes": "Error handling router"
+      }
+    },
+    {
+      "id": 15,
+      "module": "gmail:sendEmail",
+      "version": 4,
+      "parameters": {
+        "__IMTCONN__": 4056756
+      },
+      "mapper": {
+        "to": [
+          {
+            "email": "mikey@madezmedia.com"
+          }
+        ],
+        "subject": "Different Not Less Automation Error",
+        "body": "There was an error in the AAC design automation workflow:\n\nDesign Name: {{1.Name}}\nStep: {{$lastErrorModuleName}}\nError: {{$lastError}}\n\nPlease check the Make.com scenario for details.",
+        "cc": [],
+        "bcc": [],
+        "attachments": []
+      },
+      "metadata": {
+        "designer": {
+          "x": 2100,
+          "y": 300
+        },
+        "notes": "Sends error notification email"
+      }
+    },
+    {
+      "id": 16,
+      "module": "airtable:updateRecord",
+      "version": 6,
+      "parameters": {
+        "__IMTCONN__": 4085441
+      },
+      "mapper": {
+        "base": "applwPKN2KZFZ9JfW",
+        "table": "tblvIGksraXr9MHlJ",
+        "record": "{{1.id}}",
+        "fields": {
+          "Status": "Error",
+          "Notes": "Error occurred: {{$lastError}}"
+        }
+      },
+      "metadata": {
+        "designer": {
+          "x": 2400,
+          "y": 300
+        },
+        "notes": "Updates design record with error status"
+      }
+    }
+  ],
+  "metadata": {
+    "instant": false,
+    "version": 1,
+    "scenario": {
+      "roundtrips": 1,
+      "maxErrors": 3,
+      "autoCommit": true,
+      "autoCommitTriggerLast": true,
+      "sequential": false,
+      "confidential": false,
+      "dataloss": false,
+      "dlq": false,
+      "freshVariables": false
+    },
+    "designer": {
+      "orphans": []
+    },
+    "zone": "us1.make.com",
+    "notes": [
+      {
+        "content": "This workflow automates the creation of AAC and autism acceptance apparel designs using fal.ai for image generation and Printify for product creation. The entire process starts from Airtable design records and completes the cycle by updating both design and product tables.",
+        "module": null,
+        "x": 0,
+        "y": -100
+      },
+      {
+        "content": "All connection IDs are already integrated and ready for production use.",
+        "module": null,
+        "x": 0,
+        "y": -50
+      }
+    ]
+  }
+}
