@@ -29,6 +29,8 @@ The team is currently focused on **Launch Preparation**, completing final tasks 
 
 5. **Production Partner:** Selected PrintStack Inc. as primary production partner and SoftTouch Apparel for specialty sensory-friendly items
 
+6. **Business Setup & Shopify Store Management:** Created dedicated Airtable tables to track business setup details and Shopify store setup tasks (April 1)
+
 ## Active Tasks by Department
 
 ### Design & Product
@@ -43,6 +45,7 @@ The team is currently focused on **Launch Preparation**, completing final tasks 
 - [ ] Set up analytics tracking for launch metrics (Due: Mar 30)
 - [ ] Implement SSL certificate and security measures (Due: Mar 29)
 - [ ] Update GitHub Projects with actual project IDs (Due: Apr 1)
+- [x] Set up Airtable tables for business details and Shopify store setup tasks (Completed: Apr 1)
 - [x] Set up n8n automation server for product creation (Completed: Mar 31)
 - [x] Configure fal.ai integration for t-shirt design generation (Completed: Mar 31)
 - [x] Implement Printify connection for automatic product creation (Completed: Mar 31)
@@ -54,6 +57,7 @@ The team is currently focused on **Launch Preparation**, completing final tasks 
 - [x] Integrate MCP servers with development workflow (Completed: Mar 31)
 - [x] Document MCP and CI/CD integration in memory bank (Completed: Mar 31)
 - [x] Implement GitHub Projects MCP integration (Completed: Mar 31)
+- [x] Create Airtable image workspace for website and social media assets (Completed: Mar 31)
 
 ### Domain & Hosting (Post-Launch)
 - [ ] Configure DNS records for difnotless.com pointing to Vercel (Due: Apr 5)
@@ -109,6 +113,12 @@ The team is currently focused on **Launch Preparation**, completing final tasks 
 - [ ] Finalize shipping rates and policies (Due: Mar 29)
 - [ ] Train customer service team on response protocols (Due: Mar 30)
 
+### Business Setup
+- [ ] Populate Airtable business details table with company information (Due: Apr 5)
+- [ ] Complete Shopify store setup tasks according to Airtable tracking (Due: Apr 5)
+- [ ] Finalize legal and financial setup (Due: Apr 10)
+- [ ] Coordinate brand identity implementation across platforms (Due: Apr 7)
+
 ## Key Challenges & Solutions
 
 ### Challenge 1: Production Timeline Pressure
@@ -145,6 +155,11 @@ The team is currently focused on **Launch Preparation**, completing final tasks 
 - **Issue:** Need for comprehensive documentation for post-launch infrastructure
 - **Solution:** Created detailed documentation for domain architecture, n8n production, Sanity CMS, webmaster tools, and analytics
 - **Status:** Completed - all documentation created and stored in memory bank
+
+### Challenge 8: Business Details & Store Setup Management
+- **Issue:** Need for structured tracking of business setup and Shopify store configuration
+- **Solution:** Created dedicated Airtable tables with templates for business details and store setup tasks
+- **Status:** Tables created, population with actual data in progress
 
 ## Next Milestone: Launch Day (April 2, 2025)
 
@@ -193,4 +208,6 @@ The team is currently focused on **Launch Preparation**, completing final tasks 
 
 ## Key Resources & Documentation
 
-- [Launch Week Social Media Calendar](Different%20Not%20Less%20
+- [Launch Week Social Media Calendar](memory-bank/marketing/social-media-calendar.md)
+- [Brand Style Guide](memory-bank/marketing/brand-style-guide.md)
+- [Business Setup and Shopify Store Tasks](memory-bank/technical/airtable-shopify-setup.js)
