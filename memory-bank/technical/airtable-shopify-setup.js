@@ -420,27 +420,52 @@ async function createShopifySetupTables(airtableBase) {
 
 // Helper function to create a table if it doesn't exist
 async function createTableIfNotExists(base, tableName, fields) {
-  // In a real implementation, you would use the Airtable API to create a table
-  // For demonstration purposes, we'll just log the operation
-  console.log(`Creating table: ${tableName}`);
-  console.log(`With fields:`, fields);
-  
-  return {
-    name: tableName,
-    fields: fields
-  };
+  try {
+    console.log(`Attempting to create table: ${tableName}`);
+    
+    // Try to get the table - if it exists, it will work, otherwise it might throw an error
+    try {
+      const tableExists = await base(tableName).select().firstPage();
+      console.log(`Table "${tableName}" already exists.`);
+    } catch (error) {
+      // If the table doesn't exist, we'll get an error
+      console.log(`Table "${tableName}" doesn't exist yet.`);
+      console.log(`Note: Direct table creation via API isn't supported. Please create the table manually in Airtable with these fields:`, fields);
+    }
+    
+    return {
+      name: tableName,
+      fields: fields
+    };
+  } catch (error) {
+    console.error(`Error checking/creating table ${tableName}:`, error);
+    throw error;
+  }
 }
 
 // Helper function to populate a table with initial data
 async function populateInitialData(base, tableName, records) {
-  // In a real implementation, you would use the Airtable API to create records
   console.log(`Populating ${tableName} with ${records.length} initial records`);
   
-  // Simulate creating records in chunks
-  const chunkSize = 10;
-  for (let i = 0; i < records.length; i += chunkSize) {
-    const chunk = records.slice(i, i + chunkSize);
-    console.log(`Creating ${chunk.length} records (${i+1} to ${Math.min(i+chunkSize, records.length)})`);
+  try {
+    // Create records in chunks to respect Airtable API limits
+    const chunkSize = 10;
+    for (let i = 0; i < records.length; i += chunkSize) {
+      const chunk = records.slice(i, i + chunkSize);
+      console.log(`Creating ${chunk.length} records (${i+1} to ${Math.min(i+chunkSize, records.length)})`);
+      
+      try {
+        // Attempt to create the records
+        await base(tableName).create(chunk);
+        console.log(`Successfully created records ${i+1} to ${Math.min(i+chunkSize, records.length)}`);
+      } catch (error) {
+        console.error(`Error creating records in ${tableName}:`, error.message);
+        console.log('Note: You may need to create these records manually in Airtable.');
+      }
+    }
+  } catch (error) {
+    console.error(`Error in populateInitialData for ${tableName}:`, error);
+    console.log('Note: You may need to create these records manually in Airtable.');
   }
 }
 

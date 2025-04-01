@@ -22,23 +22,9 @@ async function main() {
   console.log('Starting to create Shopify setup tables in Airtable...');
   
   try {
-    // Check if tables already exist
-    const tables = await base.tables();
-    const shopifyTableExists = tables.some(table => table.name === shopifySetupTable.name);
-    const businessTableExists = tables.some(table => table.name === businessDetailsTable.name);
-    
-    if (shopifyTableExists) {
-      console.log(`Table "${shopifySetupTable.name}" already exists.`);
-    }
-    
-    if (businessTableExists) {
-      console.log(`Table "${businessDetailsTable.name}" already exists.`);
-    }
-    
-    if (shopifyTableExists && businessTableExists) {
-      console.log('Both tables already exist. Exiting...');
-      return;
-    }
+    // Skip checking if tables exist as the tables() function isn't available
+    // in the current version of the Airtable API
+    console.log('Creating tables in Airtable...');
     
     // Create tables and populate with initial data
     await createShopifySetupTables(base);

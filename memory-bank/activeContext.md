@@ -46,9 +46,11 @@ The team is currently focused on **Launch Preparation**, completing final tasks 
 - [ ] Implement SSL certificate and security measures (Due: Mar 29)
 - [ ] Update GitHub Projects with actual project IDs (Due: Apr 1)
 - [x] Set up Airtable tables for business details and Shopify store setup tasks (Completed: Apr 1)
+- [x] Create Make.com workflows for automated product generation (Completed: Apr 1)
 - [x] Set up n8n automation server for product creation (Completed: Mar 31)
 - [x] Configure fal.ai integration for t-shirt design generation (Completed: Mar 31)
 - [x] Implement Printify connection for automatic product creation (Completed: Mar 31)
+- [x] Create comprehensive setup documentation for all systems (Completed: Apr 1)
 - [ ] Set up Sanity CMS integration for product content management (Due: Mar 31)
 - [x] Create and test end-to-end product creation workflow (Completed: Mar 31)
 - [x] Document n8n workflows in knowledge base (Completed: Mar 31)
@@ -116,6 +118,8 @@ The team is currently focused on **Launch Preparation**, completing final tasks 
 ### Business Setup
 - [ ] Populate Airtable business details table with company information (Due: Apr 5)
 - [ ] Complete Shopify store setup tasks according to Airtable tracking (Due: Apr 5)
+- [x] Create detailed Shopify store setup checklist with task dependencies (Completed: Apr 1)
+- [x] Document Make.com automation workflows for product generation (Completed: Apr 1)
 - [ ] Finalize legal and financial setup (Due: Apr 10)
 - [ ] Coordinate brand identity implementation across platforms (Due: Apr 7)
 
@@ -159,7 +163,12 @@ The team is currently focused on **Launch Preparation**, completing final tasks 
 ### Challenge 8: Business Details & Store Setup Management
 - **Issue:** Need for structured tracking of business setup and Shopify store configuration
 - **Solution:** Created dedicated Airtable tables with templates for business details and store setup tasks
-- **Status:** Tables created, population with actual data in progress
+- **Status:** Tables created, setup documentation completed, population with actual data in progress
+
+### Challenge 9: Make.com and Fal.ai Workflow Integration
+- **Issue:** Complex workflow needed for automating product design generation
+- **Solution:** Created Make.com workflows with fal.ai and Printify integration
+- **Status:** Workflow files organized and documented, ready for implementation on Make.com
 
 ## Next Milestone: Launch Day (April 2, 2025)
 
@@ -211,3 +220,5 @@ The team is currently focused on **Launch Preparation**, completing final tasks 
 - [Launch Week Social Media Calendar](memory-bank/marketing/social-media-calendar.md)
 - [Brand Style Guide](memory-bank/marketing/brand-style-guide.md)
 - [Business Setup and Shopify Store Tasks](memory-bank/technical/airtable-shopify-setup.js)
+- [Make.com Workflows Documentation](make/README.md)
+- [Project Setup Guide](SETUP.md)

@@ -1,5 +1,7 @@
 # Different Not Less MCP Integration & CI/CD Rules
 
+This document serves as the shared reference for Claude and Cline as co-developers of the Different Not Less project. Both AI assistants should adhere to these guidelines and reference each other's work to maintain consistency.
+
 ## Session Conclusion Workflow
 
 ### Memory Bank Updates
@@ -58,6 +60,8 @@
 - Track inventory levels and sync with Shopify
 - Manage product variants and attributes
 - Store detailed product information
+- Use Business Details and Shopify Store Setup tables for tracking setup tasks
+- Follow the structure defined in airtable-shopify-setup.js
 
 ### Software Planning MCP
 - Use for sprint planning and feature development
@@ -99,6 +103,8 @@
   - AIRTABLE_API_KEY
   - SANITY_PROJECT_ID
   - VERCEL_TOKEN
+  - FAL_API_KEY
+  - MAKE_API_KEY
 
 ### Testing Requirements
 - Linting must pass for all code changes
