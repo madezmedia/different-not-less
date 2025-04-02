@@ -1,0 +1,836 @@
+openapi: 3.0.0
+info:
+  title: Printify API MCP Server
+  description: OpenAPI MCP server for Printify integration
+  version: 1.0.0
+servers:
+  - url: /api/v1
+    description: Server API endpoint
+security:
+  - ApiKeyAuth: []
+paths:
+  /shops:
+    get:
+      summary: Get all shops
+      description: Returns a list of all shops available to the authenticated user
+      operationId: getShops
+      tags:
+        - shops
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Shop'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  
+  /shops/{shop_id}:
+    get:
+      summary: Get shop by ID
+      operationId: getShopById
+      tags:
+        - shops
+      parameters:
+        - name: shop_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Shop'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /shops/{shop_id}/products:
+    get:
+      summary: Get all products
+      operationId: getProducts
+      tags:
+        - products
+      parameters:
+        - name: shop_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    
+    post:
+      summary: Create a product
+      operationId: createProduct
+      tags:
+        - products
+      parameters:
+        - name: shop_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductCreate'
+      responses:
+        '201':
+          description: Product created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  
+  /shops/{shop_id}/products/{product_id}:
+    get:
+      summary: Get product by ID
+      operationId: getProductById
+      tags:
+        - products
+      parameters:
+        - name: shop_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: product_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    
+    put:
+      summary: Update a product
+      operationId: updateProduct
+      tags:
+        - products
+      parameters:
+        - name: shop_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: product_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductUpdate'
+      responses:
+        '200':
+          description: Product updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    
+    delete:
+      summary: Delete a product
+      operationId: deleteProduct
+      tags:
+        - products
+      parameters:
+        - name: shop_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: product_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Product deleted
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /print_providers:
+    get:
+      summary: Get all print providers
+      operationId: getPrintProviders
+      tags:
+        - print_providers
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PrintProvider'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  
+  /print_providers/{provider_id}:
+    get:
+      summary: Get print provider by ID
+      operationId: getPrintProviderById
+      tags:
+        - print_providers
+      parameters:
+        - name: provider_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PrintProvider'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  
+  /print_providers/{provider_id}/blueprints:
+    get:
+      summary: Get all blueprints for a print provider
+      operationId: getPrintProviderBlueprints
+      tags:
+        - print_providers
+      parameters:
+        - name: provider_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Blueprint'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /shops/{shop_id}/products/{product_id}/publish:
+    post:
+      summary: Publish a product to a sales channel
+      operationId: publishProduct
+      tags:
+        - publishing
+      parameters:
+        - name: shop_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: product_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PublishRequest'
+      responses:
+        '200':
+          description: Product published
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublishResult'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /shops/{shop_id}/orders:
+    get:
+      summary: Get all orders
+      operationId: getOrders
+      tags:
+        - orders
+      parameters:
+        - name: shop_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Order'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    
+    post:
+      summary: Create an order
+      operationId: createOrder
+      tags:
+        - orders
+      parameters:
+        - name: shop_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderCreate'
+      responses:
+        '201':
+          description: Order created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+  
+  responses:
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  
+  schemas:
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+
+    Shop:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        sales_channel:
+          type: string
+          enum: [shopify, etsy, woocommerce, custom]
+    
+    Product:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        blueprint_id:
+          type: string
+        print_provider_id:
+          type: string
+        variants:
+          type: array
+          items:
+            $ref: '#/components/schemas/Variant'
+        images:
+          type: array
+          items:
+            $ref: '#/components/schemas/Image'
+        options:
+          type: array
+          items:
+            $ref: '#/components/schemas/Option'
+        tags:
+          type: array
+          items:
+            type: string
+        published:
+          type: boolean
+        external_id:
+          type: string
+          description: ID in external system (e.g., Shopify)
+    
+    ProductCreate:
+      type: object
+      required:
+        - title
+        - blueprint_id
+        - print_provider_id
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        blueprint_id:
+          type: string
+        print_provider_id:
+          type: string
+        variants:
+          type: array
+          items:
+            $ref: '#/components/schemas/VariantCreate'
+        images:
+          type: array
+          items:
+            $ref: '#/components/schemas/ImageCreate'
+        tags:
+          type: array
+          items:
+            type: string
+    
+    ProductUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        variants:
+          type: array
+          items:
+            $ref: '#/components/schemas/VariantUpdate'
+        images:
+          type: array
+          items:
+            $ref: '#/components/schemas/ImageUpdate'
+        tags:
+          type: array
+          items:
+            type: string
+    
+    Variant:
+      type: object
+      properties:
+        id:
+          type: string
+        price:
+          type: number
+        is_enabled:
+          type: boolean
+        sku:
+          type: string
+        options:
+          type: object
+          additionalProperties: true
+    
+    VariantCreate:
+      type: object
+      required:
+        - price
+        - options
+      properties:
+        price:
+          type: number
+        is_enabled:
+          type: boolean
+          default: true
+        sku:
+          type: string
+        options:
+          type: object
+          additionalProperties: true
+    
+    VariantUpdate:
+      type: object
+      properties:
+        id:
+          type: string
+        price:
+          type: number
+        is_enabled:
+          type: boolean
+        sku:
+          type: string
+    
+    Image:
+      type: object
+      properties:
+        id:
+          type: string
+        file_name:
+          type: string
+        url:
+          type: string
+        position:
+          type: integer
+        is_default:
+          type: boolean
+    
+    ImageCreate:
+      type: object
+      required:
+        - file_name
+        - url
+      properties:
+        file_name:
+          type: string
+        url:
+          type: string
+        position:
+          type: integer
+        is_default:
+          type: boolean
+    
+    ImageUpdate:
+      type: object
+      properties:
+        id:
+          type: string
+        position:
+          type: integer
+        is_default:
+          type: boolean
+    
+    Option:
+      type: object
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+        values:
+          type: array
+          items:
+            type: string
+    
+    PrintProvider:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        location:
+          type: string
+    
+    Blueprint:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        brand:
+          type: string
+        model:
+          type: string
+        images:
+          type: array
+          items:
+            type: object
+            properties:
+              url:
+                type: string
+        options:
+          type: array
+          items:
+            $ref: '#/components/schemas/BlueprintOption'
+        print_areas:
+          type: array
+          items:
+            $ref: '#/components/schemas/PrintArea'
+    
+    BlueprintOption:
+      type: object
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+        values:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              title:
+                type: string
+    
+    PrintArea:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        width:
+          type: number
+        height:
+          type: number
+    
+    PublishRequest:
+      type: object
+      required:
+        - external_id
+        - sales_channel
+      properties:
+        external_id:
+          type: string
+          description: ID in external system (e.g., Shopify)
+        sales_channel:
+          type: string
+          enum: [shopify, etsy, woocommerce, custom]
+        title:
+          type: string
+        description:
+          type: string
+        handle:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        options:
+          type: object
+          additionalProperties: true
+    
+    PublishResult:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        product_id:
+          type: string
+        external_id:
+          type: string
+    
+    Order:
+      type: object
+      properties:
+        id:
+          type: string
+        external_id:
+          type: string
+        status:
+          type: string
+          enum: [pending, processing, fulfilled, canceled]
+        shipping_method:
+          type: string
+        shipping_address:
+          $ref: '#/components/schemas/Address'
+        line_items:
+          type: array
+          items:
+            $ref: '#/components/schemas/LineItem'
+        costs:
+          $ref: '#/components/schemas/Costs'
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    
+    OrderCreate:
+      type: object
+      required:
+        - external_id
+        - shipping_method
+        - shipping_address
+        - line_items
+      properties:
+        external_id:
+          type: string
+        shipping_method:
+          type: string
+        shipping_address:
+          $ref: '#/components/schemas/Address'
+        line_items:
+          type: array
+          items:
+            $ref: '#/components/schemas/LineItemCreate'
+    
+    Address:
+      type: object
+      properties:
+        first_name:
+          type: string
+        last_name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        address1:
+          type: string
+        address2:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        zip:
+          type: string
+        country:
+          type: string
+    
+    LineItem:
+      type: object
+      properties:
+        id:
+          type: string
+        product_id:
+          type: string
+        variant_id:
+          type: string
+        quantity:
+          type: integer
+        price:
+          type: number
+        sku:
+          type: string
+        title:
+          type: string
+    
+    LineItemCreate:
+      type: object
+      required:
+        - product_id
+        - variant_id
+        - quantity
+      properties:
+        product_id:
+          type: string
+        variant_id:
+          type: string
+        quantity:
+          type: integer
+    
+    Costs:
+      type: object
+      properties:
+        subtotal:
+          type: number
+        shipping:
+          type: number
+        tax:
+          type: number
+        total:
+          type: number

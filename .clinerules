@@ -1,6 +1,6 @@
 # Different Not Less MCP Integration & CI/CD Rules
 
-This document serves as the shared reference for Claude and Cline as co-developers of the Different Not Less project. Both AI assistants should adhere to these guidelines and reference each other's work to maintain consistency.
+This document serves as a reference guide for development practices on the Different Not Less project. These are guidelines, not strict requirements, and should be adapted as needed for efficient development.
 
 ## Session Conclusion Workflow
 
@@ -39,6 +39,22 @@ This document serves as the shared reference for Claude and Cline as co-develope
   - Decisions made
   - Next steps
 - Store session summaries in memory-bank/sessions/ directory
+
+## Collaborative Development Approach
+
+### AI Assistant Collaboration
+- Knowledge files serve as shared reference points
+- Document major decisions in appropriate memory bank files
+- Maintain consistent code style and architecture
+- Each assistant can work independently on assigned tasks
+- Respect each assistant's autonomy while maintaining project coherence
+- Adapt workflows as needed to prevent loops or redundant work
+
+### Knowledge Management
+- Update memory bank files with new information
+- Document technical implementations for reference
+- Record important decisions and their rationale
+- Maintain organized documentation structure
 
 ## MCP Usage Patterns
 

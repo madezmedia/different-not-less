@@ -41,6 +41,10 @@ next-env.d.ts
 # Shopify
 .shopify.app.toml
 
+# Printify MCP Server
+/printify-mcp-server/node_modules
+/printify-mcp-server/logs
+
 # IDE
 .idea/
 .vscode/
