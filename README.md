@@ -43,8 +43,32 @@ cd different-not-less
 # Install dependencies
 npm install
 
-# Run the development server
+# Run the Next.js development server
 npm run dev
+
+# Run the Sanity Studio development server
+npm run sanity:dev
+```
+
+### Sanity Studio
+
+The project uses Sanity as a headless CMS. To work with content:
+
+1. Start the Sanity Studio server:
+```bash
+npm run sanity:dev
+```
+
+2. Access the Sanity Studio at http://localhost:3333
+
+3. Build the Sanity Studio for production:
+```bash
+npm run sanity:build
+```
+
+4. Deploy the Sanity Studio:
+```bash
+npm run sanity:deploy
 ```
 
 ## Project Structure
@@ -56,8 +80,8 @@ different-not-less/
 ├── public/           # Static assets
 ├── styles/           # CSS modules
 ├── lib/              # Utility functions and API services
-├── sanity/           # Sanity CMS configuration
-└── shopify/          # Shopify integration
+├── sanity-studio/    # Sanity CMS configuration and Studio
+└── n8n/              # n8n workflow automation
 ```
 
 ## Contributing

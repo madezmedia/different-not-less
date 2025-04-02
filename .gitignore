@@ -35,6 +35,8 @@ next-env.d.ts
 
 # Sanity
 /sanity/dist
+/sanity-studio/node_modules
+.sanity
 
 # Shopify
 .shopify.app.toml
